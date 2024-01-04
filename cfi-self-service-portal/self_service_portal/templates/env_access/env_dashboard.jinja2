@@ -1,0 +1,66 @@
+{% extends "../layout.jinja2" %}
+{% block content %}
+<!-- My Requests -->
+<div class="card shadow">
+    <div class="card-body">
+        <h2 class="h4 mb-5 pt-2 ps-2">All Requests</h2>
+        <div class="table-responsive">
+            <table class="table table-striped align-middle">
+                <thead>
+                    <tr>
+                        <th scope="col"></th>
+                        <th scope="col">First Name</th>
+                        <th scope="col">Last Name</th>
+                        <th scope="col">Team</th>
+                        <th scope="col">Environment</th>
+                        <th scope="col">Request Date</th>
+                        <th scope="col">Status</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for item in result %}
+                    <tr>
+                        <td><a role="button" class="btn btn-dark btn-sm" href="/env/request/{{item.get('Request-ID')}}"><i class="bi bi-pen"></i></a></td>
+                        <td>{{ item.get('access-first-name') }}</td>
+                        <td>{{ item.get('access-last-name') }}</td>
+                        <td>{{ item.get('access-team') }}</td>
+                        <td>{{ item.get('access-environment') }}</td>
+                        <td>{{ item.get('access-request-date') }} </td>
+                        <!-- Request Status -->
+                        {% if item.get('access-status') == "Pending" %}
+                        <td>
+                            <span class="badge rounded-pill px-3 py-2 text-bg-warning">
+                                <i class="bi bi-stopwatch-fill text-white me-2"></i> {{ item.get('access-status') }}
+                            </span>
+                        </td>
+                        {% elif item.get('access-status') == "Approved" %}
+                        <td>
+                            <span class="badge rounded-pill px-3 py-2 text-bg-success">
+                                <i class="bi bi-check-circle-fill text-white me-2"></i> {{ item.get('access-status') }}
+                            </span>
+                        </td>
+                        {% elif item.get('access-status') == "Denied" %}
+                        <td>
+                            <span class="badge rounded-pill px-3 py-2 text-bg-danger">
+                                <i class="bi bi-x-circle-fill text-white me-2"></i> {{ item.get('access-status') }}
+                            </span>
+                        </td>
+                        {% else %}
+                        <td>
+                            <span class="badge rounded-pill px-3 py-2 text-bg-secondary">
+                                <i class="bi bi-x-circle-fill text-white me-2"></i> {{ item.get('access-status') }}
+                            </span>
+                        </td>
+                        {% endif %}
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+<!-- Create New Request -->
+<p class="mt-4 text-end">
+    <a href="/env/request/new/" role="button" class="btn btn-dark"><i class="bi bi-plus-lg me-2"></i> New request</a>
+</p>
+{% endblock content %}

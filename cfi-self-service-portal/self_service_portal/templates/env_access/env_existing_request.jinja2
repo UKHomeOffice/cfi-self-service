@@ -1,0 +1,125 @@
+{% extends "../layout.jinja2" %}
+{% block content %}
+<div class="row">
+    <div class="col-7">
+        <div class="card shadow">
+            <div class="card-body">
+                <h2 class="h4 mb-5 pt-2 ps-2">Environment Request</h2>
+                <div class="table-responsive">
+                    <table class="table table-striped align-middle">
+                        <tr>
+                            <th scope="col">First Name</th>
+                            <td>{{first_name}}</td>
+                        </tr>
+                        <tr>
+                            <th scope="col">Last Name</th>
+                            <td>{{last_name}}</td>
+                        </tr>
+                        <tr>
+                            <th scope="col">Team</th>
+                            <td>{{team}}</td>
+                        </tr>
+                        <tr>
+                            <th scope="col">Environment</th>
+                            <td>{{environment}}</td>
+                        </tr>
+                        <tr>
+                            <th scope="col">Request Date</th>
+                            <td>{{request_date}}</td>
+                        </tr>
+                        <tr>
+                            <th scope="col">Status</th>
+                            <td>{{status}}</td>
+                        </tr>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-4 offset-1">
+        <!-- Approved / Denied Request -->
+        {% if status == "Approved" or status == "Denied" %}
+            <div class="card shadow">
+                <div class="card-body pt-4 ps-4">
+                    {% if status == "Approved" %}
+                        <span class="badge rounded-pill px-3 py-2 text-bg-success float-end">
+                            <i class="bi bi-check-circle-fill text-white me-2"></i> {{status}}
+                        </span>
+                    {% else %}
+                        <span class="badge rounded-pill px-3 py-2 text-bg-danger float-end">
+                            <i class="bi bi-x-circle-fill text-white me-2"></i> {{status}}
+                        </span>
+                    {% endif %}
+                    <h2 class="h5 mb-5">Request {{status}}</h2>
+                    <p class="text-center">This request was <strong>{{status}}</strong> by {{admin_name}} on {{admin_response_date}}.</p>
+                </div>
+            </div>
+            <div class="card shadow mt-4">
+                <div class="card-body pt-4 ps-4">
+                    <h2 class="h5 mb-4">Comments</h2>
+                    <p>{{admin_comments}}</p>
+                </div>
+            </div>
+        {% endif %}
+        <!-- Pending Actions -->
+        {% if status == "Pending" %}
+            <div class="card shadow">
+                <div class="card-body pt-4 ps-4">
+                    <span class="badge rounded-pill px-3 py-2 text-bg-warning float-end">
+                        <i class="bi bi-stopwatch-fill text-white me-2"></i> {{status}}
+                    </span>
+                    <h2 class="h5 mb-5">Pending Request</h2>
+                    <p class="text-center">This request is currently <strong>{{status}}</strong> - would you like to action this request?</p>
+                    <p class="mt-4 text-center">
+                        <button type="button" class="btn btn-success me-2" data-bs-toggle="modal" data-bs-target="#approveModal"><i class="bi bi-check"></i> Approve</button>
+                        <button type="button" class="btn btn-danger"  data-bs-toggle="modal" data-bs-target="#denyModal"><i class="bi bi-x"></i> Deny</button>
+                    </p>
+                </div>
+            </div>
+        {% endif %}
+    </div>
+</div>
+<!-- Approve Modal Form -->
+<div class="modal fade" id="approveModal" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header bg-success">
+        <h1 class="modal-title text-white fs-5">Approve Request</h1>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <form method="post">
+            <div class="mb-3">
+                <label for="approverComments" class="col-form-label">Would you like to leave any comments?</label>
+                <textarea class="form-control" name="adminComments"></textarea>
+            </div>
+            <input class="form-control" type="text" name="adminStatus" value="Approved" hidden />
+            <button type="submit" class="btn btn-success float-end" value="Submit"><i class="bi bi-check"></i> Approve Request</button>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+<!-- Deny Modal Form -->
+<div class="modal fade" id="denyModal" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header bg-danger">
+        <h1 class="modal-title text-white fs-5">Deny Request</h1>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <form method="post">
+            <div class="mb-3">
+                <label for="approverComments" class="col-form-label">Would you like to leave any comments?</label>
+                <textarea class="form-control" name="adminComments"></textarea>
+            </div>
+            <input class="form-control" type="text" name="adminName" value="Ryan Jackson" hidden />
+            <input class="form-control" type="text" name="adminStatus" value="Denied" hidden />
+            <button type="submit" class="btn btn-danger float-end" value="Submit"><i class="bi bi-x"></i> Deny Request</button>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock content %}

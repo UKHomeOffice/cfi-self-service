@@ -1,0 +1,59 @@
+{% extends "../layout.jinja2" %}
+{% block content %}
+<form method="post">
+    <div class="row">
+        <div class="col-7">
+            <div class="card shadow h-100">
+                <div class="card-body">
+                    <h2 class="h4 mb-4 pt-2 ps-2">Environment Request</h2>
+                    <div class="mb-3 pt-2 ps-2">
+                        <div class="row">
+                            <div class="col">
+                                <label for="firstName" class="col-form-label">First Name</label>
+                                <input type="text" class="form-control" name="firstName" aria-label="First name" />
+                            </div>
+                            <div class="col">
+                                <label for="lastName" class="col-form-label">Last Name</label>
+                                <input type="text" class="form-control" name="lastName" aria-label="Last name" />
+                            </div>
+                        </div>
+                        <div class="row mt-3">
+                            <div class="col">
+                                <label for="emailAddress" class="col-form-label">Email Address</label>                            
+                                <input type="email" class="form-control" name="emailAddress" placeholder="e.g. name@homeoffice.gov.uk">
+                            </div>
+                            <div class="col">
+                                <label for="teamName" class="col-form-label">Team</label>                            
+                                <input type="text" class="form-control" name="teamName">
+                            </div>
+                        </div>
+                        <div class="row mt-3">
+                            <div class="col">
+                                <label for="environmentRequired" class="form-label">Environment</label>
+                                <input class="form-control" list="datalistOptions" name="environmentRequired" placeholder="Type to search...">
+                                <datalist id="datalistOptions">
+                                    <option value="Test">
+                                    <option value="Development">
+                                    <option value="Production">
+                                </datalist>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-4 offset-1">
+            <div class="card shadow">
+                <div class="card-body">
+                    <h2 class="h5 mb-4 pt-2 ps-2">Comments</h2>
+                    <div class="mb-3 pt-2 ps-2">
+                        <label for="requestComments" class="col-form-label">Would you like to leave any comments?</label>
+                        <textarea class="form-control" name="requestComments"></textarea>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <button type="submit" class="btn btn-success float-end mt-5" value="Submit"><i class="bi bi-check"></i> Submit Request</button>
+</form>
+{% endblock content %}
