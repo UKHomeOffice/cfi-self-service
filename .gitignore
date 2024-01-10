@@ -9,7 +9,7 @@ build/
 dist/
 .tox/
 nosetests.xml
-env*/
+env/
 tmp/
 Data*.fs*
 *.sublime-project
@@ -22,3 +22,5 @@ test
 *.sqlite
 *pycache*
 *pytest_cache/
+.vscode
+*.aws
