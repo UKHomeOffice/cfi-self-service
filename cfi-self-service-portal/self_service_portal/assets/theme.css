@@ -2,10 +2,10 @@
 
 body, h1, h2, h3, h4, h5, h6, p                   { font-family: "Open Sans", "Helvetica Neue", Helvetica, Arial, sans-serif; font-weight: 300; }
 button, input, optgroup, select, textarea         { color: black; }
-
 strong, .font-semi-bold, .modal-title             { font-weight: 600; }
 .font-normal                                      { font-weight: 400; }
 .font-bold                                        { font-weight: 700; }
+.text-white-75                                    { color: rgba(255,255,255,.5)!important; }
 
 .mt-neg                                           { margin-top: -4.75rem; }
 .nav-header                                       { background: var(--bs-gray-800); padding: 3.5rem 0 7.5rem 0; }
@@ -14,43 +14,25 @@ strong, .font-semi-bold, .modal-title             { font-weight: 600; }
 .card-subtitle                                    { line-height: 1.5; }
 .home-link                                        { color: var(--bs-white); text-decoration: none; }
 .menu-icon                                        { font-size: 3em; }
-.text-white-75                                    { --bs-text-opacity: 1; color: rgba(255,255,255,.75)!important; }
+
+.timeline-with-icons                              { border-left: 1px solid hsl(0, 0%, 90%); position: relative; list-style: none; left: 15px; padding-right: 10px; }
+.timeline-with-icons .timeline-item               { position: relative; }
+.timeline-with-icons .timeline-item:after         { position: absolute; display: block; top: 0; }
+.timeline-with-icons .timeline-icon               { position: absolute; left: -48px; border-radius: 50%; height: 31px; width: 31px; display: flex; align-items: center; justify-content: center; }
+
+.alert-success                                    { --bs-alert-bg: var(--bs-success); }
+.alert-info                                       { --bs-alert-bg: var(--bs-blue); }
+.flash-message                                    { position: fixed; left: 1rem; bottom: 1rem; width: 30%; animation: fadeOut 8s forwards; }
+
+@keyframes fadeOut {
+  0%, 30% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+    display: none;
+  }
+}
 
 ::placeholder                                     { color: var(--bs-gray-500) !important; opacity: 1; /* Firefox */ }
 ::-ms-input-placeholder                           { /* Edge 12 -18 */ color: var(--bs-gray-500) !important; }
-
-.starter-template .content                        { margin-left: 10px; }
-.starter-template .content h1                     { margin-top: 10px; font-size: 60px; }
-.starter-template .content h1 .smaller            { font-size: 40px; color: #f2b7bd; }
-.starter-template .content .lead                  { font-size: 25px; color: #f2b7bd; }
-.starter-template .content .lead .font-normal     { color: #ffffff; }
-.starter-template .links                          { float: right; right: 0; margin-top: 125px; }
-.starter-template .links ul                       { display: block; padding: 0; margin: 0; }
-.starter-template .links ul li                    { list-style: none; display: inline; margin: 0 10px; }
-.starter-template .links ul li:first-child        { margin-left: 0; }
-.starter-template .links ul li:last-child         { margin-right: 0; }
-.starter-template .links ul li.current-version    { color: #f2b7bd; font-weight: 400; }
-.starter-template .links ul li .icon-muted        { color: #eb8b95; margin-right: 5px; }
-.starter-template .links ul li:hover .icon-muted  { color: #ffffff; }
-
-@media (max-width: 1199px) {
-  .starter-template .content h1                   { font-size: 45px; }
-  .starter-template .content h1 .smaller          { font-size: 30px; }
-  .starter-template .content .lead                { font-size: 20px; }
-}
-
-@media (max-width: 991px) {
-  .starter-template                               { margin-top: 0; }
-  .starter-template .logo                         { margin: 40px auto; }
-  .starter-template .content                      { margin-left: 0; text-align: center; }
-  .starter-template .content h1                   { margin-bottom: 20px; }
-  .starter-template .links                        { float: none; text-align: center; margin-top: 60px; }
-}
-
-@media (max-width: 767px) {
-  .starter-template .content h1 .smaller          { font-size: 25px; display: block; }
-  .starter-template .content .lead                { font-size: 16px; }
-  .starter-template .links                        { margin-top: 40px; }
-  .starter-template .links ul li                  { display: block; margin: 0; }
-  .starter-template .links ul li .icon-muted      { display: none; }
-}

@@ -1,81 +1,128 @@
 {% extends "../layout.jinja2" %}
 {% block content %}
-<div class="row">
-    <div class="col-7">
+<!-- Environment Request -->
+<div class="row mb-5">
+    <div class="col-12 col-lg-7">
         <div class="card shadow">
+            <div class="card-header">
+                <h2 class="h4 my-3 ps-2">Environment Request</h2>
+            </div>
             <div class="card-body">
-                <h2 class="h4 mb-5 pt-2 ps-2">Environment Request</h2>
-                <div class="table-responsive">
-                    <table class="table table-striped align-middle">
-                        <tr>
-                            <th scope="col">First Name</th>
-                            <td>{{first_name}}</td>
-                        </tr>
-                        <tr>
-                            <th scope="col">Last Name</th>
-                            <td>{{last_name}}</td>
-                        </tr>
-                        <tr>
-                            <th scope="col">Team</th>
-                            <td>{{team}}</td>
-                        </tr>
-                        <tr>
-                            <th scope="col">Environment</th>
-                            <td>{{environment}}</td>
-                        </tr>
-                        <tr>
-                            <th scope="col">Request Date</th>
-                            <td>{{request_date}}</td>
-                        </tr>
-                        <tr>
-                            <th scope="col">Status</th>
-                            <td>{{status}}</td>
-                        </tr>
-                    </table>
+                <div class="mb-3 pt-2 ps-2">
+                    <div class="row">
+                        <div class="col-12 col-lg-6 mb-3 mb-lg-0">
+                            <label class="col-form-label fw-medium">Name</label>
+                            <p>{{ first_name }} {{ last_name }}</p>
+                        </div>
+                        <div class="col-12 col-lg-6 mb-3 mb-lg-0">
+                            <label class="col-form-label fw-medium">Email Address</label>
+                            <p>{{ email_address }}</p>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-12 col-lg-6 mb-3 mb-lg-0">
+                            <label class="col-form-label fw-medium">Team</label>
+                            <p>{{ team }}</p>
+                        </div>
+                        <div class="col-12 col-lg-6 mb-3 mb-lg-0">
+                            <label class="col-form-label fw-medium">Environment</label>
+                            <p>{{ environment }}</p>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-12 col-lg-6 mb-3 mb-lg-0">
+                            <label class="col-form-label fw-medium">Request Date</label>
+                            <p>{{ request_date }}</p>
+                        </div>
+                        <div class="col-12 col-lg-6 mb-3 mb-lg-0">
+                            <label class="col-form-label fw-medium">Comments</label>
+                            <p>{{ comments }}</p>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
-    <div class="col-4 offset-1">
-        <!-- Approved / Denied Request -->
-        {% if status == "Approved" or status == "Denied" %}
-            <div class="card shadow">
-                <div class="card-body pt-4 ps-4">
-                    {% if status == "Approved" %}
-                        <span class="badge rounded-pill px-3 py-2 text-bg-success float-end">
-                            <i class="bi bi-check-circle-fill text-white me-2"></i> {{status}}
-                        </span>
-                    {% else %}
-                        <span class="badge rounded-pill px-3 py-2 text-bg-danger float-end">
-                            <i class="bi bi-x-circle-fill text-white me-2"></i> {{status}}
-                        </span>
+    <div class="col-12 col-lg-4 offset-lg-1 mt-4 mt-lg-0">
+        <div class="card shadow">
+            <div class="card-header">
+                <h2 class="h5 my-3 ps-2">Request Status</h2>
+                <p class="ps-2">
+                    {% if status == "Pending" %}
+                        <span class="badge text-bg-warning">
+                            <i class="bi bi-stopwatch me-2"></i>
+                    {% elif status == "Approved" %}
+                        <span class="badge text-bg-success">
+                            <i class="bi bi-check text-white me-2"></i>
+                    {% elif status == "Denied" %}
+                        <span class="badge text-bg-danger">
+                            <i class="bi bi-x text-white me-2"></i>
                     {% endif %}
-                    <h2 class="h5 mb-5">Request {{status}}</h2>
-                    <p class="text-center">This request was <strong>{{status}}</strong> by {{admin_name}} on {{admin_response_date}}.</p>
-                </div>
+                        {{status}}
+                    </span>
+                </p>
             </div>
+            <div class="card-body pt-4 ps-4">
+                <ul class="timeline-with-icons">
+                    <!-- Admin Action -->
+                    {% if status == "Approved" or status == "Denied" %}
+                        <li class="timeline-item mb-5">
+                            {% if status == "Approved" %}
+                                <span class="timeline-icon bg-success">
+                                    <i class="bi bi-check text-white"></i>
+                                </span>
+                            {% elif status == "Denied" %}
+                                <span class="timeline-icon bg-danger">
+                                    <i class="bi bi-x text-white"></i>
+                                </span>
+                            {% endif %}
+                            <h5 class="h6">{{admin_name}}</h5>
+                            <p class="text-muted small mb-3">{{admin_response_date}}</p>
+                            <p class="text-muted small">This request was <strong>{{status}}</strong> by {{admin_name}} on {{admin_response_date}}.</p>
+                        </li>
+                    {% endif %}
+                    <!-- Request Submission -->
+                    <li class="timeline-item mb-4">
+                        <span class="timeline-icon bg-secondary">
+                            <i class="bi bi-person text-white"></i>
+                        </span>
+                        <h5 class="h6">{{first_name}} {{last_name}}</h5>
+                        <p class="text-muted small mb-3">{{request_date}}</p>
+                        <p class="text-muted small">The request was <strong>Submitted</strong> by {{first_name}} {{last_name}} on {{request_date}}.</p>
+                    </li>
+                </ul>
+            </div>
+        </div>
+        <!-- Admin Comments -->
+        {% if status == "Approved" or status == "Denied" %}
             <div class="card shadow mt-4">
+                <div class="card-header">
+                    <h2 class="h5 my-3 ps-2">Admin Comments</h2>
+                </div>
                 <div class="card-body pt-4 ps-4">
-                    <h2 class="h5 mb-4">Comments</h2>
-                    <p>{{admin_comments}}</p>
+                    {% if admin_comments != "" %}
+                        <ul class="timeline-with-icons">
+                            <li class="timeline-item mb-4">
+                                <span class="timeline-icon bg-primary">
+                                    <i class="bi bi-chat-square text-white"></i>
+                                </span>
+                                <h5 class="h6">{{admin_name}}</h5>
+                                <p class="text-muted small mb-3">{{admin_response_date}}</p>
+                                <p class="text-muted small">{{admin_comments}}</p>
+                            </li>
+                        </ul>
+                    {% else %}
+                        <p>There are no admin comments to show for this request.</p>
+                    {% endif %}
                 </div>
             </div>
         {% endif %}
         <!-- Pending Actions -->
         {% if status == "Pending" %}
-            <div class="card shadow">
-                <div class="card-body pt-4 ps-4">
-                    <span class="badge rounded-pill px-3 py-2 text-bg-warning float-end">
-                        <i class="bi bi-stopwatch-fill text-white me-2"></i> {{status}}
-                    </span>
-                    <h2 class="h5 mb-5">Pending Request</h2>
-                    <p class="text-center">This request is currently <strong>{{status}}</strong> - would you like to action this request?</p>
-                    <p class="mt-4 text-center">
-                        <button type="button" class="btn btn-success me-2" data-bs-toggle="modal" data-bs-target="#approveModal"><i class="bi bi-check"></i> Approve</button>
-                        <button type="button" class="btn btn-danger"  data-bs-toggle="modal" data-bs-target="#denyModal"><i class="bi bi-x"></i> Deny</button>
-                    </p>
-                </div>
-            </div>
+            <p class="mt-4 text-end">
+                <button type="button" class="btn btn-success me-2" data-bs-toggle="modal" data-bs-target="#approveModal"><i class="bi bi-check"></i> Approve</button>
+                <button type="button" class="btn btn-danger"  data-bs-toggle="modal" data-bs-target="#denyModal"><i class="bi bi-x"></i> Deny</button>
+            </p>
         {% endif %}
     </div>
 </div>
@@ -89,9 +136,9 @@
       </div>
       <div class="modal-body">
         <form method="post">
-            <div class="mb-3">
+            <div class="mb-4">
                 <label for="approverComments" class="col-form-label">Would you like to leave any comments?</label>
-                <textarea class="form-control" name="adminComments"></textarea>
+                <textarea class="form-control" name="adminComments" rows="5"></textarea>
             </div>
             <input class="form-control" type="text" name="adminStatus" value="Approved" hidden />
             <button type="submit" class="btn btn-success float-end" value="Submit"><i class="bi bi-check"></i> Approve Request</button>
@@ -110,9 +157,9 @@
       </div>
       <div class="modal-body">
         <form method="post">
-            <div class="mb-3">
+            <div class="mb-4">
                 <label for="approverComments" class="col-form-label">Would you like to leave any comments?</label>
-                <textarea class="form-control" name="adminComments"></textarea>
+                <textarea class="form-control" name="adminComments" rows="5"></textarea>
             </div>
             <input class="form-control" type="text" name="adminName" value="Ryan Jackson" hidden />
             <input class="form-control" type="text" name="adminStatus" value="Denied" hidden />
@@ -122,4 +169,12 @@
     </div>
   </div>
 </div>
+<!-- Flash Message -->
+{% if message != [] %}
+    <div class="alert alert-info shadow flash-message" id="flashMessage" role="alert">
+        <p class="text-center"><i class="bi bi-info-circle-fill text-white" style="font-size: 2.5rem;"></i></p>
+        <h5 class="font-normal text-white text-center mt-3">Thanks for actioning this request!</h5>
+        <p class="text-center text-white-50">The requester has been informed of this update via email and portal notification.</p>
+    </div>
+{% endif %}
 {% endblock content %}

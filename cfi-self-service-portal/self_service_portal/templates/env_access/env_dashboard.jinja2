@@ -1,16 +1,53 @@
-{% extends "../layout.jinja2" %}
+{% extends "../layout.jinja2" %}  
 {% block content %}
-<!-- My Requests -->
-<div class="card shadow">
+<!-- Request Breakdown -->
+<div class="row mb-4">
+    <div class="col-xs-12 col-sm-6 col-xl-2 mb-4 mb-xl-0">
+        <div class="card shadow">
+            <div class="card-body">
+                <div class="mb-4"><i class="bi bi-person-circle text-dark" style="font-size: 1.75em;"></i></div>
+                <p class="fs-2 mb-1">{{totalCount}}</p>
+                <p>Total Requests</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-xs-12 col-sm-6 col-xl-2 mb-4 mb-xl-0 ">
+        <div class="card shadow">
+            <div class="card-body">
+                <div class="mb-4"><i class="bi bi-stopwatch-fill text-warning" style="font-size: 1.75em;"></i></div>
+                <p class="fs-2 mb-1">{{pendingCount}}</p>
+                <p>Pending</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-xs-12 col-sm-6 col-xl-2 mb-4 mb-xl-0">
+        <div class="card shadow">
+            <div class="card-body">
+                <div class="mb-4"><i class="bi bi-check-circle-fill text-success" style="font-size: 1.75em;"></i></div>
+                <p class="fs-2 mb-1">{{approvedCount}}</p>
+                <p>Approved</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-xs-12 col-sm-6 col-xl-2 mb-4 mb-xl-0">
+        <div class="card shadow">
+            <div class="card-body">
+                <div class="mb-4"><i class="bi bi-x-circle-fill text-danger" style="font-size: 1.75em;"></i></div>
+                <p class="fs-2 mb-1">{{deniedCount}}</p>
+                <p>Denied</p>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- Request Table -->
+<div class="card shadow mb-5">
     <div class="card-body">
-        <h2 class="h4 mb-5 pt-2 ps-2">All Requests</h2>
         <div class="table-responsive">
-            <table class="table table-striped align-middle">
+            <table class="table table-striped">
                 <thead>
                     <tr>
                         <th scope="col"></th>
-                        <th scope="col">First Name</th>
-                        <th scope="col">Last Name</th>
+                        <th scope="col">Name</th>
                         <th scope="col">Team</th>
                         <th scope="col">Environment</th>
                         <th scope="col">Request Date</th>
@@ -19,48 +56,51 @@
                 </thead>
                 <tbody>
                     {% for item in result %}
-                    <tr>
-                        <td><a role="button" class="btn btn-dark btn-sm" href="/env/request/{{item.get('Request-ID')}}"><i class="bi bi-pen"></i></a></td>
-                        <td>{{ item.get('access-first-name') }}</td>
-                        <td>{{ item.get('access-last-name') }}</td>
-                        <td>{{ item.get('access-team') }}</td>
-                        <td>{{ item.get('access-environment') }}</td>
-                        <td>{{ item.get('access-request-date') }} </td>
-                        <!-- Request Status -->
-                        {% if item.get('access-status') == "Pending" %}
-                        <td>
-                            <span class="badge rounded-pill px-3 py-2 text-bg-warning">
-                                <i class="bi bi-stopwatch-fill text-white me-2"></i> {{ item.get('access-status') }}
-                            </span>
-                        </td>
-                        {% elif item.get('access-status') == "Approved" %}
-                        <td>
-                            <span class="badge rounded-pill px-3 py-2 text-bg-success">
-                                <i class="bi bi-check-circle-fill text-white me-2"></i> {{ item.get('access-status') }}
-                            </span>
-                        </td>
-                        {% elif item.get('access-status') == "Denied" %}
-                        <td>
-                            <span class="badge rounded-pill px-3 py-2 text-bg-danger">
-                                <i class="bi bi-x-circle-fill text-white me-2"></i> {{ item.get('access-status') }}
-                            </span>
-                        </td>
-                        {% else %}
-                        <td>
-                            <span class="badge rounded-pill px-3 py-2 text-bg-secondary">
-                                <i class="bi bi-x-circle-fill text-white me-2"></i> {{ item.get('access-status') }}
-                            </span>
-                        </td>
-                        {% endif %}
-                    </tr>
+                        <tr>
+                            <td><a href="/env/request/{{ item.get('Request-ID') }}"><i class="bi bi-pencil-square"></i></a></td>
+                            <td>{{ item.get('access-first-name') }} {{ item.get('access-last-name') }}</td>
+                            <td>{{ item.get('access-team') }}</td>
+                            <td>{{ item.get('access-environment') }}</td>
+                            <td>{{ item.get('access-request-date') }} </td>
+                            <!-- Request Status -->
+                            {% if item.get('access-status') == "Pending" %}
+                                <td>
+                                    <span class="badge rounded-pill px-3 py-2 text-bg-warning">
+                                        <i class="bi bi-stopwatch-fill text-white me-2"></i> {{ item.get('access-status') }}
+                                    </span>
+                                </td>
+                            {% elif item.get('access-status') == "Approved" %}
+                                <td>
+                                    <span class="badge rounded-pill px-3 py-2 text-bg-success">
+                                        <i class="bi bi-check-circle-fill text-white me-2"></i> {{ item.get('access-status') }}
+                                    </span>
+                                </td>
+                            {% elif item.get('access-status') == "Denied" %}
+                                <td>
+                                    <span class="badge rounded-pill px-3 py-2 text-bg-danger">
+                                        <i class="bi bi-x-circle-fill text-white me-2"></i> {{ item.get('access-status') }}
+                                    </span>
+                                </td>
+                            {% else %}
+                                <td>
+                                    <span class="badge rounded-pill px-3 py-2 text-bg-secondary">
+                                        <i class="bi bi-x-circle-fill text-white me-2"></i> {{ item.get('access-status') }}
+                                    </span>
+                                </td>
+                            {% endif %}
+                        </tr>
                     {% endfor %}
                 </tbody>
             </table>
         </div>
     </div>
 </div>
-<!-- Create New Request -->
-<p class="mt-4 text-end">
-    <a href="/env/request/new/" role="button" class="btn btn-dark"><i class="bi bi-plus-lg me-2"></i> New request</a>
-</p>
+<!-- Flash Message -->
+{% if message != [] %}
+    <div class="alert alert-success shadow flash-message" id="flashMessage" role="alert">
+        <p class="text-center"><i class="bi bi-check-circle-fill text-white" style="font-size: 2.5rem;"></i></p>
+        <h5 class="font-normal text-white text-center mt-3">Thanks for your request!</h5>
+        <p class="text-center text-white-50">Your request has been submitted successfully and we'll be in touch.</p>
+    </div>
+{% endif %}
 {% endblock content %}
