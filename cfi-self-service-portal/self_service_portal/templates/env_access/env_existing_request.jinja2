@@ -49,13 +49,13 @@
                 <h2 class="h5 my-3 ps-2">Request Status</h2>
                 <p class="ps-2">
                     {% if status == "Pending" %}
-                        <span class="badge text-bg-warning">
+                        <span class="badge text-bg-warning fw-normal">
                             <i class="bi bi-stopwatch me-2"></i>
                     {% elif status == "Approved" %}
-                        <span class="badge text-bg-success">
+                        <span class="badge text-bg-success fw-normal">
                             <i class="bi bi-check text-white me-2"></i>
                     {% elif status == "Denied" %}
-                        <span class="badge text-bg-danger">
+                        <span class="badge text-bg-danger fw-normal">
                             <i class="bi bi-x text-white me-2"></i>
                     {% endif %}
                         {{status}}
@@ -172,7 +172,7 @@
 <!-- Flash Message -->
 {% if message != [] %}
     <div class="alert alert-info shadow flash-message" id="flashMessage" role="alert">
-        <p class="text-center"><i class="bi bi-info-circle-fill text-white" style="font-size: 2.5rem;"></i></p>
+        <p class="text-center"><i class="bi bi-check-circle-fill text-white" style="font-size: 2.5rem;"></i></p>
         <h5 class="fw-normal text-white text-center mt-3">Thanks for actioning this request!</h5>
         <p class="text-center text-white-50">The requester will be informed of this update via portal notification.</p>
     </div>

@@ -46,18 +46,18 @@
             <table class="table table-striped">
                 <thead>
                     <tr>
-                        <th scope="col"></th>
                         <th scope="col">Name</th>
                         <th scope="col">Team</th>
                         <th scope="col">Environment</th>
                         <th scope="col">Request Date</th>
                         <th scope="col">Status</th>
+                        <!-- Admin Only --> 
+                        <th scope="col"></th>
                     </tr>
                 </thead>
                 <tbody>
                     {% for item in result %}
                         <tr>
-                            <td><a href="/env/request/{{ item.get('Request-ID') }}"><i class="bi bi-pencil-square"></i></a></td>
                             <td>{{ item.get('access-first-name') }} {{ item.get('access-last-name') }}</td>
                             <td>{{ item.get('access-team') }}</td>
                             <td>{{ item.get('access-environment') }}</td>
@@ -88,6 +88,11 @@
                                     </span>
                                 </td>
                             {% endif %}
+                            <!-- Admin Only -->
+                            <td>
+                                <a class="me-3" href="/env/request/{{ item.get('Request-ID') }}"><i class="bi bi-folder2-open"></i></a>
+                                <a href="/env/admin/{{ item.get('Request-ID')}}"><i class="bi bi-pencil-square"></i></a>
+                            </td>
                         </tr>
                     {% endfor %}
                 </tbody>
@@ -96,7 +101,14 @@
     </div>
 </div>
 <!-- Flash Message -->
-{% if message != [] %}
+{% if "Record Deleted" in message %}
+    <div class="alert alert-danger shadow flash-message" id="flashMessage" role="alert">
+        <p class="text-center"><i class="bi bi-trash3 text-white" style="font-size: 2.5rem;"></i></p>
+        <h5 class="fw-normal text-white text-center mt-3">The record has been deleted</h5>
+        <p class="text-center text-white-50">Your request has been deleted successfully and the requester has been notified.</p>
+    </div>
+{% endif %}
+{% if "Record Submitted" in message %}
     <div class="alert alert-success shadow flash-message" id="flashMessage" role="alert">
         <p class="text-center"><i class="bi bi-check-circle-fill text-white" style="font-size: 2.5rem;"></i></p>
         <h5 class="fw-normal text-white text-center mt-3">Thanks for your request!</h5>

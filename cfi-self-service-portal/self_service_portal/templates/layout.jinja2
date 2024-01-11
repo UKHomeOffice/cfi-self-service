@@ -26,8 +26,7 @@
           </button>
           <div class="collapse navbar-collapse" id="navbarText">
             <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-              <!-- Notifications -->
-              <!--
+              <!-- Notifications
               <li class="nav-item dropdown me-3">
                 <a class="nav-link text-white" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
                   <i class="bi bi-bell-fill"></i>
@@ -73,7 +72,7 @@
             </ul>
             <span class="navbar-text">
               <!-- New Access Request -->
-              {% if subtitle == "Environment Access" %}
+              {% if "Environment Access" in subtitle %}
                 <a role="button" href="/env/request/new/" class="btn btn-sm btn-light"><i class="bi bi-plus-circle me-2"></i> New Request</a>
               {% endif %}
             </span>

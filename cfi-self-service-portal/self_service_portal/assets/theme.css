@@ -26,6 +26,8 @@ strong, .modal-title                              { font-weight: 600; }
 
 .alert-success                                    { --bs-alert-bg: var(--bs-success); }
 .alert-info                                       { --bs-alert-bg: var(--bs-blue); }
+.alert-danger                                     { --bs-alert-bg: var(--bs-danger); }
+
 .flash-message                                    { position: fixed; left: 1rem; bottom: 1rem; width: 30%; animation: fadeOut 8s forwards; }
 
 @keyframes fadeOut {
