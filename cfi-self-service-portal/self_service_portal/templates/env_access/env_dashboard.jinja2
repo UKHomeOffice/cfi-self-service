@@ -1,40 +1,94 @@
 {% extends "../layout.jinja2" %}  
 {% block content %}
 <!-- Request Breakdown -->
-<div class="row mb-4">
-    <div class="col-xs-12 col-sm-6 col-xl-2 mb-4 mb-xl-0">
-        <div class="card shadow">
-            <div class="card-body">
-                <div class="mb-4"><i class="bi bi-person-circle text-dark" style="font-size: 1.75em;"></i></div>
-                <p class="fs-2 mb-1">{{totalCount}}</p>
-                <p>Total Requests</p>
+<div class="row align-items-start mb-4">
+    <!-- All Requests -->
+    {% if not selected_status %}
+        <div class="col-xs-12 col-sm-6 col-xl-2 mb-4 mb-xl-0">
+            <div class="card shadow">
+                <div class="card-body">
+                    <div class="mb-4"><i class="bi bi-person-circle text-dark" style="font-size: 1.75em;"></i></div>
+                    <p class="fs-2 fw-medium mb-1">{{totalCount}}</p>
+                    <p>Total Requests</p>
+                </div>
             </div>
         </div>
-    </div>
-    <div class="col-xs-12 col-sm-6 col-xl-2 mb-4 mb-xl-0 ">
-        <div class="card shadow">
-            <div class="card-body">
-                <div class="mb-4"><i class="bi bi-stopwatch-fill text-warning" style="font-size: 1.75em;"></i></div>
-                <p class="fs-2 mb-1">{{pendingCount}}</p>
-                <p>Pending</p>
+        <div class="col-xs-12 col-sm-6 col-xl-2 mb-4 mb-xl-0 ">
+            <div class="card shadow">
+                <div class="card-body">
+                    <div class="mb-4"><i class="bi bi-stopwatch-fill text-warning" style="font-size: 1.75em;"></i></div>
+                    <p class="fs-2 fw-medium mb-1">{{pendingCount}}</p>
+                    <p>Pending</p>
+                </div>
             </div>
         </div>
-    </div>
-    <div class="col-xs-12 col-sm-6 col-xl-2 mb-4 mb-xl-0">
-        <div class="card shadow">
-            <div class="card-body">
-                <div class="mb-4"><i class="bi bi-check-circle-fill text-success" style="font-size: 1.75em;"></i></div>
-                <p class="fs-2 mb-1">{{approvedCount}}</p>
-                <p>Approved</p>
+        <div class="col-xs-12 col-sm-6 col-xl-2 mb-4 mb-xl-0">
+            <div class="card shadow">
+                <div class="card-body">
+                    <div class="mb-4"><i class="bi bi-check-circle-fill text-success" style="font-size: 1.75em;"></i></div>
+                    <p class="fs-2 fw-medium mb-1">{{approvedCount}}</p>
+                    <p>Approved</p>
+                </div>
             </div>
         </div>
-    </div>
-    <div class="col-xs-12 col-sm-6 col-xl-2 mb-4 mb-xl-0">
-        <div class="card shadow">
+        <div class="col-xs-12 col-sm-6 col-xl-2 mb-4 mb-xl-0">
+            <div class="card shadow">
+                <div class="card-body">
+                    <div class="mb-4"><i class="bi bi-x-circle-fill text-danger" style="font-size: 1.75em;"></i></div>
+                    <p class="fs-2 fw-medium mb-1">{{deniedCount}}</p>
+                    <p>Denied</p>
+                </div>
+            </div>
+        </div>
+    {% else %}
+        <!-- Status Requests -->
+        <div class="col-xs-12 col-sm-6 col-xl-2 mb-4 mb-xl-0">
+            <div class="card shadow">
+                <div class="card-body">
+                    {% if selected_status == "Pending" %}
+                        <div class="mb-4"><i class="bi bi-stopwatch-fill text-warning" style="font-size: 1.75em;"></i></div>
+                        <p class="fs-2 fw-medium mb-1">{{pendingCount}}</p>
+                    {% elif selected_status == "Approved" %}
+                        <div class="mb-4"><i class="bi bi-check-circle-fill text-success" style="font-size: 1.75em;"></i></div>
+                        <p class="fs-2 fw-medium mb-1">{{approvedCount}}</p>
+                    {% elif selected_status == "Denied" %}
+                        <div class="mb-4"><i class="bi bi-x-circle-fill text-danger" style="font-size: 1.75em;"></i></div>
+                        <p class="fs-2 fw-medium mb-1">{{deniedCount}}</p>
+                    {% endif %}
+                    <p>{{selected_status}}</p>
+                </div>
+            </div>
+        </div>
+    {% endif %}
+    <!-- Request Filters -->
+    {% if not selected_status %}
+    <div class="col-xs-12 col-xl-3 offset-xl-1 mb-4 mb-xl-0">
+    {% else %}
+    <div class="col-xs-12 col-xl-3 offset-xl-7 mb-4 mb-xl-0">
+    {% endif %}
+        <div class="card shadow request-filters">
             <div class="card-body">
-                <div class="mb-4"><i class="bi bi-x-circle-fill text-danger" style="font-size: 1.75em;"></i></div>
-                <p class="fs-2 mb-1">{{deniedCount}}</p>
-                <p>Denied</p>
+                <h6 class="text-white fw-medium d-flex align-items-center mb-4"><i class="bi bi-funnel-fill text-white me-2" style="font-size: 1.75em;"></i> Request Filters</h6>
+                <form id="filterForm" method="get">
+                    <div>
+                        <label class="small text-white mb-2" for="status"> Status</label>
+                        <select class="form-control" name="status" id="status">
+                            <option value="" {% if not selected_status %}selected{% endif %}>All</option>
+                            <option value="Pending" {% if selected_status == 'Pending' %}selected{% endif %}>Pending</option>
+                            <option value="Approved" {% if selected_status == 'Approved' %}selected{% endif %}>Approved</option>
+                            <option value="Denied" {% if selected_status == 'Denied' %}selected{% endif %}>Denied</option>
+                        </select>
+                    </div>
+                    <div class="mt-3">
+                        <label class="small text-white mb-2" for="environment"> Environment</label>
+                        <select class="form-control" name="environment" id="environment">
+                            <option value="" {% if not selected_environment %}selected{% endif %}>All</option>
+                            <option value="Test" {% if selected_environment == 'Test' %}selected{% endif %}>Test</option>
+                            <option value="Development" {% if selected_environment == 'Development' %}selected{% endif %}>Development</option>
+                            <option value="Production" {% if selected_environment == 'Production' %}selected{% endif %}>Production</option>
+                        </select>
+                    </div>
+                </form>
             </div>
         </div>
     </div>
@@ -42,62 +96,65 @@
 <!-- Request Table -->
 <div class="card shadow mb-5">
     <div class="card-body">
-        <div class="table-responsive">
-            <table class="table table-striped">
-                <thead>
-                    <tr>
-                        <th scope="col">Name</th>
-                        <th scope="col">Team</th>
-                        <th scope="col">Environment</th>
-                        <th scope="col">Request Date</th>
-                        <th scope="col">Status</th>
-                        <!-- Admin Only --> 
-                        <th scope="col"></th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {% for item in result %}
+        {% if result %}
+            <div class="table-responsive">
+                <table class="table table-striped">
+                    <thead>
                         <tr>
-                            <td>{{ item.get('access-first-name') }} {{ item.get('access-last-name') }}</td>
-                            <td>{{ item.get('access-team') }}</td>
-                            <td>{{ item.get('access-environment') }}</td>
-                            <td>{{ item.get('access-request-date') }} </td>
-                            <!-- Request Status -->
-                            {% if item.get('access-status') == "Pending" %}
-                                <td>
-                                    <span class="badge rounded-pill px-3 py-2 text-bg-warning">
-                                        <i class="bi bi-stopwatch-fill text-white me-2"></i> {{ item.get('access-status') }}
-                                    </span>
-                                </td>
-                            {% elif item.get('access-status') == "Approved" %}
-                                <td>
-                                    <span class="badge rounded-pill px-3 py-2 text-bg-success">
-                                        <i class="bi bi-check-circle-fill text-white me-2"></i> {{ item.get('access-status') }}
-                                    </span>
-                                </td>
-                            {% elif item.get('access-status') == "Denied" %}
-                                <td>
-                                    <span class="badge rounded-pill px-3 py-2 text-bg-danger">
-                                        <i class="bi bi-x-circle-fill text-white me-2"></i> {{ item.get('access-status') }}
-                                    </span>
-                                </td>
-                            {% else %}
-                                <td>
-                                    <span class="badge rounded-pill px-3 py-2 text-bg-secondary">
-                                        <i class="bi bi-x-circle-fill text-white me-2"></i> {{ item.get('access-status') }}
-                                    </span>
-                                </td>
-                            {% endif %}
-                            <!-- Admin Only -->
-                            <td>
-                                <a class="me-3" href="/env/request/{{ item.get('Request-ID') }}"><i class="bi bi-folder2-open"></i></a>
-                                <a href="/env/admin/{{ item.get('Request-ID')}}"><i class="bi bi-pencil-square"></i></a>
-                            </td>
+                            <th scope="col">Name</th>
+                            <th scope="col">Team</th>
+                            <th scope="col">Environment</th>
+                            <th scope="col">Request Date</th>
+                            <th scope="col">Status</th>
+                            <th scope="col"></th>
                         </tr>
-                    {% endfor %}
-                </tbody>
-            </table>
-        </div>
+                    </thead>
+                    <tbody>
+                        {% for item in result %}
+                            <tr>
+                                <td>{{ item.get('access-first-name') }} {{ item.get('access-last-name') }}</td>
+                                <td>{{ item.get('access-team') }}</td>
+                                <td>{{ item.get('access-environment') }}</td>
+                                <td>{{ item.get('access-request-date') }} </td>
+                                <!-- Request Status -->
+                                {% if item.get('access-status') == "Pending" %}
+                                    <td>
+                                        <span class="badge rounded-pill px-3 py-2 text-bg-warning">
+                                            <i class="bi bi-stopwatch-fill text-white me-2"></i> {{ item.get('access-status') }}
+                                        </span>
+                                    </td>
+                                {% elif item.get('access-status') == "Approved" %}
+                                    <td>
+                                        <span class="badge rounded-pill px-3 py-2 text-bg-success">
+                                            <i class="bi bi-check-circle-fill text-white me-2"></i> {{ item.get('access-status') }}
+                                        </span>
+                                    </td>
+                                {% elif item.get('access-status') == "Denied" %}
+                                    <td>
+                                        <span class="badge rounded-pill px-3 py-2 text-bg-danger">
+                                            <i class="bi bi-x-circle-fill text-white me-2"></i> {{ item.get('access-status') }}
+                                        </span>
+                                    </td>
+                                {% else %}
+                                    <td>
+                                        <span class="badge rounded-pill px-3 py-2 text-bg-secondary">
+                                            <i class="bi bi-x-circle-fill text-white me-2"></i> {{ item.get('access-status') }}
+                                        </span>
+                                    </td>
+                                {% endif %}
+                                <!-- Admin Control Panel -->
+                                <td>
+                                    <a class="me-3" href="/env/request/{{ item.get('Request-ID') }}"><i class="bi bi-folder2-open"></i></a>
+                                    <a href="/env/admin/{{ item.get('Request-ID')}}"><i class="bi bi-pencil-square"></i></a>
+                                </td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        {% else %}
+            <p class="lead text-center mb-0 py-4">There are no records to display.</p>
+        {% endif %}
     </div>
 </div>
 <!-- Flash Message -->
@@ -115,4 +172,12 @@
         <p class="text-center text-white-50">Your request has been submitted successfully and we'll be in touch.</p>
     </div>
 {% endif %}
+<script>
+    const filterElements = document.querySelectorAll('select');
+    filterElements.forEach(element => {
+        element.addEventListener('change', function() {
+            document.getElementById('filterForm').submit();
+        });
+    });
+</script>
 {% endblock content %}

@@ -11,6 +11,8 @@ strong, .modal-title                              { font-weight: 600; }
 .nav-header                                       { background: var(--bs-gray-800); padding: 3.5rem 0 7.5rem 0; }
 .sub-nav-header                                   { background: var(--bs-gray-700);}
 
+.request-filters                                  { background: var(--bs-gray-600); }
+
 .mt-neg                                           { margin-top: -4.75rem; }
 
 .home-link                                        { color: var(--bs-white); text-decoration: none; }
