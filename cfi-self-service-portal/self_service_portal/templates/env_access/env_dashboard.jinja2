@@ -1,4 +1,4 @@
-{% extends "../layout.jinja2" %}  
+{% extends "../layout.jinja2" %}
 {% block content %}
 <!-- Request Breakdown -->
 <div class="row align-items-start mb-4">
@@ -8,55 +8,75 @@
             <div class="card shadow">
                 <div class="card-body">
                     <div class="mb-4"><i class="bi bi-person-circle text-dark" style="font-size: 1.75em;"></i></div>
-                    <p class="fs-2 fw-medium mb-1">{{totalCount}}</p>
-                    <p>Total Requests</p>
+                    <p class="fs-2 mb-1">{{totalCount}}</p>
+                </div>
+                <div class="card-footer bg-dark py-3">
+                    <p class="text-white fw-medium mb-0">Total Requests</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-xs-12 col-sm-6 col-xl-2 mb-4 mb-xl-0">
+            <div class="card shadow">
+                <div class="card-body">
+                    <div class="mb-4"><i class="bi bi-check-circle text-success" style="font-size: 1.75em;"></i></div>
+                    <p class="fs-2 mb-1">{{approvedCount}}</p>
+                </div>
+                <div class="card-footer bg-success py-3">
+                    <p class="text-white fw-medium mb-0">Approved</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-xs-12 col-sm-6 col-xl-2 mb-4 mb-xl-0">
+            <div class="card shadow">
+                <div class="card-body">
+                    <div class="mb-4"><i class="bi bi-x-circle text-danger" style="font-size: 1.75em;"></i></div>
+                    <p class="fs-2 mb-1">{{deniedCount}}</p>
+                </div>
+                <div class="card-footer bg-danger py-3">
+                    <p class="text-white fw-medium mb-0">Denied</p>
                 </div>
             </div>
         </div>
         <div class="col-xs-12 col-sm-6 col-xl-2 mb-4 mb-xl-0 ">
             <div class="card shadow">
                 <div class="card-body">
-                    <div class="mb-4"><i class="bi bi-stopwatch-fill text-warning" style="font-size: 1.75em;"></i></div>
-                    <p class="fs-2 fw-medium mb-1">{{pendingCount}}</p>
-                    <p>Pending</p>
+                    <div class="mb-4"><i class="bi bi-stopwatch text-warning" style="font-size: 1.75em;"></i></div>
+                    <p class="fs-2 mb-1">{{pendingCount}}</p>
                 </div>
-            </div>
-        </div>
-        <div class="col-xs-12 col-sm-6 col-xl-2 mb-4 mb-xl-0">
-            <div class="card shadow">
-                <div class="card-body">
-                    <div class="mb-4"><i class="bi bi-check-circle-fill text-success" style="font-size: 1.75em;"></i></div>
-                    <p class="fs-2 fw-medium mb-1">{{approvedCount}}</p>
-                    <p>Approved</p>
-                </div>
-            </div>
-        </div>
-        <div class="col-xs-12 col-sm-6 col-xl-2 mb-4 mb-xl-0">
-            <div class="card shadow">
-                <div class="card-body">
-                    <div class="mb-4"><i class="bi bi-x-circle-fill text-danger" style="font-size: 1.75em;"></i></div>
-                    <p class="fs-2 fw-medium mb-1">{{deniedCount}}</p>
-                    <p>Denied</p>
+                <div class="card-footer bg-warning py-3">
+                    <p class="text-dark fw-medium mb-0">Pending</p>
                 </div>
             </div>
         </div>
     {% else %}
-        <!-- Status Requests -->
+        <!-- Status / Environment Specific Requests -->
         <div class="col-xs-12 col-sm-6 col-xl-2 mb-4 mb-xl-0">
             <div class="card shadow">
-                <div class="card-body">
-                    {% if selected_status == "Pending" %}
-                        <div class="mb-4"><i class="bi bi-stopwatch-fill text-warning" style="font-size: 1.75em;"></i></div>
-                        <p class="fs-2 fw-medium mb-1">{{pendingCount}}</p>
-                    {% elif selected_status == "Approved" %}
-                        <div class="mb-4"><i class="bi bi-check-circle-fill text-success" style="font-size: 1.75em;"></i></div>
-                        <p class="fs-2 fw-medium mb-1">{{approvedCount}}</p>
-                    {% elif selected_status == "Denied" %}
-                        <div class="mb-4"><i class="bi bi-x-circle-fill text-danger" style="font-size: 1.75em;"></i></div>
-                        <p class="fs-2 fw-medium mb-1">{{deniedCount}}</p>
-                    {% endif %}
-                    <p>{{selected_status}}</p>
-                </div>
+                {% if selected_status == "Pending" %}
+                    <div class="card-body">
+                        <div class="mb-4"><i class="bi bi-stopwatch text-warning" style="font-size: 1.75em;"></i></div>
+                        <p class="fs-2 mb-1">{{pendingCount}}</p>
+                    </div>
+                    <div class="card-footer bg-warning py-3">
+                        <p class="text-dark fw-medium mb-0">Pending</p>
+                    </div>
+                {% elif selected_status == "Approved" %}
+                    <div class="card-body">
+                        <div class="mb-4"><i class="bi bi-check-circle text-success" style="font-size: 1.75em;"></i></div>
+                        <p class="fs-2 mb-1">{{approvedCount}}</p>
+                    </div>
+                    <div class="card-footer bg-success py-3">
+                        <p class="text-white fw-medium mb-0">Approved</p>
+                    </div>
+                {% elif selected_status == "Denied" %}
+                    <div class="card-body">
+                        <div class="mb-4"><i class="bi bi-x-circle text-danger" style="font-size: 1.75em;"></i></div>
+                        <p class="fs-2 mb-1">{{deniedCount}}</p>
+                    </div>
+                    <div class="card-footer bg-danger py-3">
+                        <p class="text-white fw-medium mb-0">Denied</p>
+                    </div>
+                {% endif %}
             </div>
         </div>
     {% endif %}
