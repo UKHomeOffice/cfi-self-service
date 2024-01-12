@@ -24,6 +24,7 @@ def env_dashboard_view(request):
     messages = request.session.pop_flash()
     # Create the connection to the DynamoDB table:
     dynamodb_table = Models.get_dynamodb_connection("")
+    # Get form data from the dashboard:
     form_data = request.params
     selected_status = form_data.get('status')
     selected_environment = form_data.get('environment')
@@ -48,27 +49,25 @@ def env_dashboard_view(request):
         response = dynamodb_table.scan(
             FilterExpression=condition_expression,
             ExpressionAttributeNames=expression_attribute_names,
-            ExpressionAttributeValues=expression_attribute_values
+            ExpressionAttributeValues=expression_attribute_values,
         )
     else:
         response = dynamodb_table.scan()
-    # Arrange the records by status and request date:
+    # Extract the items and last evaluated key from the response
+    # Then, arrange the records by status and request date:
     items = response.get('Items', [])
     sorted_items = sorted(items, key=lambda x: ( x.get('access-status', ''), datetime.strptime(x.get('access-request-date'), '%d/%m/%Y %H:%M') ), reverse=True)
-    # Setup integers to hold status counts:
-    all_requests_count = 0
-    pending_requests = 0
-    approved_requests = 0
-    denied_requests = 0
-    # Get the counts for each request status:
+    # Get the number of requests for each status:
+    status_type = ["Pending", "Approved", "Denied"]
+    status_counts = {status: 0 for status in ['total_requests'] + [f'{status.lower()}_requests' for status in status_type]}
     for item in items:
-        all_requests_count += 1
-        if item.get('access-status') == "Pending":
-            pending_requests += 1
-        elif item.get('access-status') == "Approved":
-            approved_requests += 1
-        elif item.get('access-status') == "Denied":
-            denied_requests += 1
+        status_counts['total_requests'] += 1
+        status = item.get('access-status')
+        if status in status_type:
+            status_counts[f'{status.lower()}_requests'] += 1
+        else:
+            # Increment all_requests even if status is not found
+            status_counts['all_requests'] += 1
 
     return {
         'subtitle': 'Environment Access',
@@ -77,10 +76,7 @@ def env_dashboard_view(request):
         'result': sorted_items,
         'selected_status': selected_status,
         'selected_environment': selected_environment,
-        'totalCount': all_requests_count,
-        'pendingCount': pending_requests,
-        'approvedCount': approved_requests,
-        'deniedCount': denied_requests
+        'status_counts': status_counts
     }
 
 ########################################################################################################################

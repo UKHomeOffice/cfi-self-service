@@ -2,83 +2,43 @@
 {% block content %}
 <!-- Request Breakdown -->
 <div class="row align-items-start mb-4">
-    <!-- All Requests -->
     {% if not selected_status %}
-        <div class="col-xs-12 col-sm-6 col-xl-2 mb-4 mb-xl-0">
-            <div class="card shadow">
-                <div class="card-body">
-                    <div class="mb-4"><i class="bi bi-person-circle text-dark" style="font-size: 1.75em;"></i></div>
-                    <p class="fs-2 mb-1">{{totalCount}}</p>
-                </div>
-                <div class="card-footer bg-dark py-3">
-                    <p class="text-white fw-medium mb-0">Total Requests</p>
-                </div>
-            </div>
-        </div>
-        <div class="col-xs-12 col-sm-6 col-xl-2 mb-4 mb-xl-0">
-            <div class="card shadow">
-                <div class="card-body">
-                    <div class="mb-4"><i class="bi bi-check-circle text-success" style="font-size: 1.75em;"></i></div>
-                    <p class="fs-2 mb-1">{{approvedCount}}</p>
-                </div>
-                <div class="card-footer bg-success py-3">
-                    <p class="text-white fw-medium mb-0">Approved</p>
+        <!-- All Requests -->
+        {% for status_type, color, icon, text in [('Total', 'dark', 'bi bi-person-circle text-dark', 'white'),
+                                        ('Approved', 'success', 'bi bi-check-circle text-success', 'white'),
+                                        ('Denied', 'danger', 'bi bi-x-circle text-danger', 'white'),
+                                        ('Pending', 'warning', 'bi bi-stopwatch text-warning', 'dark')] %}
+            <div class="col-xs-12 col-sm-6 col-xl-2 mb-4 mb-xl-0">
+                <div class="card shadow">
+                    <div class="card-body">
+                        <div class="mb-4"><i class="{{ icon }}" style="font-size: 1.75em;"></i></div>
+                        <p class="fs-2 mb-1">{{ status_counts[status_type.lower() + '_requests'] }}</p>
+                    </div>
+                    <div class="card-footer bg-{{ color }} py-3">
+                        <p class="text-{{text}} fw-medium mb-0">{{ status_type }}</p>
+                    </div>
                 </div>
             </div>
-        </div>
-        <div class="col-xs-12 col-sm-6 col-xl-2 mb-4 mb-xl-0">
-            <div class="card shadow">
-                <div class="card-body">
-                    <div class="mb-4"><i class="bi bi-x-circle text-danger" style="font-size: 1.75em;"></i></div>
-                    <p class="fs-2 mb-1">{{deniedCount}}</p>
-                </div>
-                <div class="card-footer bg-danger py-3">
-                    <p class="text-white fw-medium mb-0">Denied</p>
-                </div>
-            </div>
-        </div>
-        <div class="col-xs-12 col-sm-6 col-xl-2 mb-4 mb-xl-0 ">
-            <div class="card shadow">
-                <div class="card-body">
-                    <div class="mb-4"><i class="bi bi-stopwatch text-warning" style="font-size: 1.75em;"></i></div>
-                    <p class="fs-2 mb-1">{{pendingCount}}</p>
-                </div>
-                <div class="card-footer bg-warning py-3">
-                    <p class="text-dark fw-medium mb-0">Pending</p>
-                </div>
-            </div>
-        </div>
+        {% endfor %}
     {% else %}
         <!-- Status / Environment Specific Requests -->
-        <div class="col-xs-12 col-sm-6 col-xl-2 mb-4 mb-xl-0">
-            <div class="card shadow">
-                {% if selected_status == "Pending" %}
-                    <div class="card-body">
-                        <div class="mb-4"><i class="bi bi-stopwatch text-warning" style="font-size: 1.75em;"></i></div>
-                        <p class="fs-2 mb-1">{{pendingCount}}</p>
+        {% for status_type, color, icon, text in [('Pending', 'warning', 'bi bi-stopwatch text-warning', 'dark'),
+                                        ('Approved', 'success', 'bi bi-check-circle text-success', 'white'),
+                                        ('Denied', 'danger', 'bi bi-x-circle text-danger', 'white')] %}
+            {% if selected_status == status_type %}
+                <div class="col-xs-12 col-sm-6 col-xl-2 mb-4 mb-xl-0">
+                    <div class="card shadow">
+                        <div class="card-body">
+                            <div class="mb-4"><i class="{{ icon }}" style="font-size: 1.75em;"></i></div>
+                            <p class="fs-2 mb-1">{{ status_counts[status_type.lower() + '_requests'] }}</p>
+                        </div>
+                        <div class="card-footer bg-{{ color }} py-3">
+                            <p class="text-{{text}} fw-medium mb-0">{{ status_type }}</p>
+                        </div>
                     </div>
-                    <div class="card-footer bg-warning py-3">
-                        <p class="text-dark fw-medium mb-0">Pending</p>
-                    </div>
-                {% elif selected_status == "Approved" %}
-                    <div class="card-body">
-                        <div class="mb-4"><i class="bi bi-check-circle text-success" style="font-size: 1.75em;"></i></div>
-                        <p class="fs-2 mb-1">{{approvedCount}}</p>
-                    </div>
-                    <div class="card-footer bg-success py-3">
-                        <p class="text-white fw-medium mb-0">Approved</p>
-                    </div>
-                {% elif selected_status == "Denied" %}
-                    <div class="card-body">
-                        <div class="mb-4"><i class="bi bi-x-circle text-danger" style="font-size: 1.75em;"></i></div>
-                        <p class="fs-2 mb-1">{{deniedCount}}</p>
-                    </div>
-                    <div class="card-footer bg-danger py-3">
-                        <p class="text-white fw-medium mb-0">Denied</p>
-                    </div>
-                {% endif %}
-            </div>
-        </div>
+                </div>
+            {% endif %}
+        {% endfor %}
     {% endif %}
     <!-- Request Filters -->
     {% if not selected_status %}
