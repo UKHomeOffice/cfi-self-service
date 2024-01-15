@@ -1,4 +1,7 @@
+
 @import url(//fonts.googleapis.com/css?family=Open+Sans:300,400,600,700);
+
+#pDebug #pDebugToolbarHandle                      { position: fixed; top: 90% !important; right: 1% !important;}
 
 body, h1, h2, h3, h4, h5, h6, p                   { font-family: "Open Sans", "Helvetica Neue", Helvetica, Arial, sans-serif; font-weight: 300; }
 button, input, optgroup, select, textarea         { color: black; }
@@ -11,7 +14,10 @@ strong, .modal-title                              { font-weight: 600; }
 .nav-header                                       { background: var(--bs-gray-800); padding: 3.5rem 0 7.5rem 0; }
 .sub-nav-header                                   { background: var(--bs-gray-700);}
 
+.request-filters                                  { background: var(--bs-gray-600); }
+
 .mt-neg                                           { margin-top: -4.75rem; }
+.mt-neg-dashboard                                 { margin-top: -7rem; }
 
 .home-link                                        { color: var(--bs-white); text-decoration: none; }
 .menu-icon                                        { font-size: 3em; }
@@ -31,13 +37,8 @@ strong, .modal-title                              { font-weight: 600; }
 .flash-message                                    { position: fixed; left: 1rem; bottom: 1rem; width: 30%; animation: fadeOut 8s forwards; }
 
 @keyframes fadeOut {
-  0%, 30% {
-    opacity: 1;
-  }
-  100% {
-    opacity: 0;
-    display: none;
-  }
+  0%, 30%   { opacity: 1; }
+  100%      { opacity: 0; display: none; }
 }
 
 ::placeholder                                     { color: var(--bs-gray-500) !important; opacity: 1; /* Firefox */ }

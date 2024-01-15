@@ -89,7 +89,7 @@
       </div>
     </div>
     <!-- Page Content -->
-    <div class="container-fluid mt-neg">
+    <div class="container-fluid {% if title == 'Dashboard' %}mt-neg-dashboard{% else %}mt-neg{% endif %}">
       <div class="container">
         {% block content %}
           <p>No content</p>
