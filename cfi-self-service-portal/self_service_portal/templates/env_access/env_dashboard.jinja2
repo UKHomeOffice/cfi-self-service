@@ -1,7 +1,7 @@
 {% extends "../layout.jinja2" %}
 {% block content %}
 <!-- Request Breakdown -->
-<div class="row align-items-start mb-4">
+<div class="row align-items-end mb-5">
     {% if not selected_status %}
         <!-- All Requests -->
         {% for status_type, color, icon, text in [('Total', 'dark', 'bi bi-person-circle text-dark', 'white'),
@@ -48,7 +48,7 @@
     {% endif %}
         <div class="card shadow request-filters">
             <div class="card-body">
-                <h6 class="text-white fw-medium d-flex align-items-center mb-4"><i class="bi bi-funnel-fill text-white me-2" style="font-size: 1.75em;"></i> Request Filters</h6>
+                <h6 class="text-white fw-medium d-flex align-items-center mb-4"><i class="bi bi-funnel-fill text-white me-3" style="font-size: 1.75em;"></i> Request Filters</h6>
                 <form id="filterForm" method="get">
                     <div>
                         <label class="small text-white mb-2" for="status"> Status</label>
@@ -137,6 +137,20 @@
         {% endif %}
     </div>
 </div>
+<!-- Pagination Links -->
+<div class="mb-5">
+    <nav aria-label="Page navigation example">
+        <ul class="pagination">
+            {% if page > 1 %}
+                <li class="page-item"><a class="page-link" href="?page={{ page - 1 }}"><span aria-hidden="true">&laquo;&nbsp;</span> Previous</a></li>
+            {% endif %}
+            <li class="page-item"><a class="page-link" href="?page={{page}}">{{page}}</a></li>
+            {% if page < total_pages %}
+                <li class="page-item"><a class="page-link" href="?page={{ page + 1 }}">Next <span aria-hidden="true">&nbsp;&raquo;</span></a></li>
+            {% endif %}
+        </ul>
+    </nav>
+</div>
 <!-- Flash Message -->
 {% if "Record Deleted" in message %}
     <div class="alert alert-danger shadow flash-message" id="flashMessage" role="alert">
@@ -152,6 +166,7 @@
         <p class="text-center text-white-50">Your request has been submitted successfully and we'll be in touch.</p>
     </div>
 {% endif %}
+<!-- Automatically apply filters when selected -->
 <script>
     const filterElements = document.querySelectorAll('select');
     filterElements.forEach(element => {

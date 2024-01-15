@@ -1,4 +1,5 @@
 
+import math
 import uuid
 from datetime import datetime
 from boto3.dynamodb.conditions import Key
@@ -20,18 +21,25 @@ def home_view(request):
 
 @view_config(route_name='env-dashboard', renderer='self_service_portal:templates/env_access/env_dashboard.jinja2')
 def env_dashboard_view(request):
+
     # Pop the flash message up on return on HTTP POST:
     messages = request.session.pop_flash()
+
     # Create the connection to the DynamoDB table:
     dynamodb_table = Models.get_dynamodb_connection("")
+
     # Get form data from the dashboard:
     form_data = request.params
     selected_status = form_data.get('status')
     selected_environment = form_data.get('environment')
+
     # Define condition expressions and attribute values based on the selected filters:
     condition_expression = None
+    environment_condition = None
+    scan_parameters = {}
     expression_attribute_names = {}
     expression_attribute_values = {}
+
     if selected_status:
         condition_expression = '#access_status = :status'
         expression_attribute_names['#access_status'] = 'access-status'
@@ -44,39 +52,55 @@ def env_dashboard_view(request):
             condition_expression = environment_condition
         expression_attribute_names['#access_environment'] = 'access-environment'
         expression_attribute_values[':environment'] = selected_environment
+
     # Perform a query to fetch records from DynamoDB with the conditions:
     if selected_status or selected_environment:
-        response = dynamodb_table.scan(
-            FilterExpression=condition_expression,
-            ExpressionAttributeNames=expression_attribute_names,
-            ExpressionAttributeValues=expression_attribute_values,
-        )
-    else:
-        response = dynamodb_table.scan()
-    # Extract the items and last evaluated key from the response
+        scan_parameters['FilterExpression'] = condition_expression
+        scan_parameters['ExpressionAttributeNames'] = expression_attribute_names
+        scan_parameters['ExpressionAttributeValues'] = expression_attribute_values
+
+    response = dynamodb_table.scan(**scan_parameters)
+
+    # Extract the items and last evaluated key from the response:
     # Then, arrange the records by status and request date:
     items = response.get('Items', [])
     sorted_items = sorted(items, key=lambda x: ( x.get('access-status', ''), datetime.strptime(x.get('access-request-date'), '%d/%m/%Y %H:%M') ), reverse=True)
+
+    # Calculate total pages:
+    items_per_page = 10
+    total_items = len(sorted_items)
+    total_pages = math.ceil(total_items / items_per_page)
+
+    # Calculate start and end indices for slicing based on the current page:
+    page = int(request.params.get('page', 1))
+    start_index = (page - 1) * items_per_page
+    end_index = start_index + items_per_page
+
+    # Slice the sorted items based on pagination:
+    paginated_items = sorted_items[start_index:end_index]
+
     # Get the number of requests for each status:
     status_type = ["Pending", "Approved", "Denied"]
     status_counts = {status: 0 for status in ['total_requests'] + [f'{status.lower()}_requests' for status in status_type]}
-    for item in items:
+    for item in sorted_items:
         status_counts['total_requests'] += 1
         status = item.get('access-status')
         if status in status_type:
             status_counts[f'{status.lower()}_requests'] += 1
         else:
-            # Increment all_requests even if status is not found
+            # Increment all_requests even if status is not found:
             status_counts['all_requests'] += 1
 
     return {
         'subtitle': 'Environment Access',
         'title': 'Dashboard',
         'message': messages,
-        'result': sorted_items,
+        'result': paginated_items,
         'selected_status': selected_status,
         'selected_environment': selected_environment,
-        'status_counts': status_counts
+        'status_counts': status_counts,
+        'page': page,
+        'total_pages': total_pages,
     }
 
 ########################################################################################################################
