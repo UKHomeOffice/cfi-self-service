@@ -7,5 +7,6 @@ def includeme(config):
     config.add_route('env-dashboard', '/env/')
     config.add_route('env-new-request', '/env/request/new/')
     config.add_route('env-request', '/env/request/{id}')
-
     config.add_route('env-admin-control-panel', '/env/admin/{id}')
+
+    config.add_route('env-generate', '/env/generate/')

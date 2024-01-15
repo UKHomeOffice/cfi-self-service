@@ -322,3 +322,18 @@ def env_admin_control_panel_view(request):
         'current_date_time': datetime.now().strftime("%d/%m/%Y %H:%M"),
         'message': messages
     }
+
+########################################################################################################################
+# Environment URL's - Generate URL:
+########################################################################################################################
+
+@view_config(route_name='env-generate', renderer='self_service_portal:templates/env_generate/env_generate_url.jinja2')
+def env_generate(request):
+
+
+
+    return {
+        'subtitle': 'Environment URL''s',
+        'title': 'Generate Environment URL',
+    }
+ 

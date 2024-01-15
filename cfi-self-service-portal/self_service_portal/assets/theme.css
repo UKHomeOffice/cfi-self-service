@@ -23,6 +23,7 @@ strong, .modal-title                              { font-weight: 600; }
 .menu-icon                                        { font-size: 3em; }
 .start-80                                         { left: 80%; }
 
+.dropdown-toggle::after                           { margin-left: .5em !important; }
 .notification-message                             { border-bottom: 1px solid var(--bs-border-color); padding: 15px; }
 
 .timeline-with-icons                              { border-left: 1px solid hsl(0, 0%, 90%); position: relative; list-style: none; left: 15px; padding-right: 10px; }
