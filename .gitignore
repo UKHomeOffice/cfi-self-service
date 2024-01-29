@@ -24,3 +24,4 @@ test
 *pytest_cache/
 .vscode
 *.aws
+*.ini

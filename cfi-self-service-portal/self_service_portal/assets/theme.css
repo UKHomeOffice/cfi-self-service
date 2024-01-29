@@ -24,7 +24,7 @@ strong, .modal-title                              { font-weight: 600; }
 .start-80                                         { left: 80%; }
 
 .dropdown-toggle::after                           { margin-left: .5em !important; }
-.notification-message                             { border-bottom: 1px solid var(--bs-border-color); padding: 15px; }
+.notification-message                             { border-bottom: 1px solid var(--bs-border-color); padding: 5px 15px 15px 15px; }
 
 .timeline-with-icons                              { border-left: 1px solid hsl(0, 0%, 90%); position: relative; list-style: none; left: 15px; padding-right: 10px; }
 .timeline-with-icons .timeline-item               { position: relative; }
@@ -36,6 +36,7 @@ strong, .modal-title                              { font-weight: 600; }
 .alert-danger                                     { --bs-alert-bg: var(--bs-danger); }
 
 .flash-message                                    { position: fixed; left: 1rem; bottom: 1rem; width: 30%; animation: fadeOut 8s forwards; }
+.flash-message-login                              { position: fixed; right: 1rem; bottom: 1rem; width: 30%; animation: fadeOut 8s forwards; }
 
 @keyframes fadeOut {
   0%, 30%   { opacity: 1; }

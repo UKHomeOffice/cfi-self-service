@@ -1,0 +1,76 @@
+{% extends "../layout.jinja2" %}
+{% block content %}
+<div class="row mb-5">
+    <div class="col-12 col-lg-7">
+        <div class="card shadow">
+            <div class="card-header">
+                <h2 class="h4 my-3 ps-2">Sign In</h2>
+            </div>
+            <div class="card-body">
+                <div class="mb-3 pt-2 ps-2">
+                    <form method="post" onsubmit="return validateForm()" autocomplete="off">
+                        <!-- Email Address -->
+                        <div class="row">
+                            <div class="col-12 mb-3 mb-lg-0">
+                                <label for="emailAddress" class="col-form-label">Email Address</label>
+                                <input type="email" class="form-control" name="emailAddress" id="formEmailAddress" autocomplete="off" />
+                                <span id="emailAddressError" class="text-danger small pt-3"></span>
+                            </div>
+                        </div>
+                        <!-- Password -->
+                        <div class="row mt-lg-3">
+                            <div class="col-12 mb-3 mb-lg-0">
+                                <label for="password" class="col-form-label">Password</label>
+                                <input type="password" class="form-control" name="password" id="formPassword" autocomplete="off" />
+                                <span id="passwordError" class="text-danger small pt-3"></span>
+                            </div>
+                        </div>
+                        <!-- Submit Button -->
+                        <button type="submit" class="btn btn-primary mt-4">Sign In</button>
+                    </form>
+                    {% if error_message %}
+                        <p class="text-danger mt-4">{{ error_message }}</p>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-12 col-lg-4 offset-lg-1">
+        <div class="card shadow">
+            <div class="card-header">
+                <h2 class="h4 my-3 ps-2">Forgot your password?</h2>
+            </div>
+            <div class="card-body">
+                <div class="mb-3 pt-2 ps-2">
+                    <p>If you have forgotten your password, you can click on the button below to start the reset process:</p>
+                    <a role="button" class="btn btn-outline-primary mt-2" href="/login/change-password/request/">Reset Password</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- Flash Messages -->
+{% if "Password Changed" in message %}
+    <div class="alert alert-success shadow flash-message-login" id="flashMessage" role="alert">
+        <p class="text-center"><i class="bi bi-check-circle text-white" style="font-size: 2.5rem;"></i></p>
+        <h5 class="fw-normal text-white text-center mt-3">Your password has been changed</h5>
+        <p class="text-center text-white-50">Your password has been changed successfully, please try logging in again.</p>
+    </div>
+{% endif %}
+{% if "MFA Setup" in message %}
+    <div class="alert alert-success shadow flash-message-login" id="flashMessage" role="alert">
+        <p class="text-center"><i class="bi bi-check-circle text-white" style="font-size: 2.5rem;"></i></p>
+        <h5 class="fw-normal text-white text-center mt-3">Multi-factor authentication has been setup</h5>
+        <p class="text-center text-white-50">You have set up MFA on your account successfully, please try logging in again.</p>
+    </div>
+{% endif %}
+{% if "Logout Successful" in message %}
+    <div class="alert alert-success shadow flash-message-login" id="flashMessage" role="alert">
+        <p class="text-center"><i class="bi bi-check-circle text-white" style="font-size: 2.5rem;"></i></p>
+        <h5 class="fw-normal text-white text-center mt-3">You have logged out successfully</h5>
+        <p class="text-center text-white-50">Your account has now been logged out sucessfully. You may log in again or close this window.</p>
+    </div>
+{% endif %}
+<!-- Login Validation Scripts -->
+<script src="{{request.static_url('self_service_portal:assets/scripts/login-validation.js')}}"></script>
+{% endblock content %}

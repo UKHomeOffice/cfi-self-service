@@ -1,3 +1,4 @@
+
 def test_root(testapp):
     res = testapp.get('/', status=200)
     assert res.status_code == 200

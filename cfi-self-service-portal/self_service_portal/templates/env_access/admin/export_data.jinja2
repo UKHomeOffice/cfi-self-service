@@ -1,7 +1,7 @@
-{% extends "../layout.jinja2" %}
+{% extends "../../layout.jinja2" %}
 {% block content %}
 <!-- Request Breakdown -->
-<div class="row align-items-end mb-5">
+<div class="row align-items-start mb-5">
     {% if not selected_status %}
         <!-- All Requests -->
         {% for status_type, color, icon, text in [('Total', 'dark', 'bi bi-person-circle text-dark', 'white'),
@@ -71,19 +71,21 @@
                         </select>
                     </div>
                 </form>
+                <form class="mt-4" method="post">
+                    <button type="submit" class="btn btn-light" name="exportData" id="exportData"><i class="bi bi-filetype-csv me-2"></i> Export to CSV</button>
+                </form>
             </div>
         </div>
     </div>
 </div>
 <!-- Request Table -->
-<div class="card shadow mb-4">
+<div class="card shadow mb-5">
     <div class="card-body">
         {% if result %}
             <div class="table-responsive">
                 <table class="table table-striped">
                     <thead>
                         <tr>
-                            <th scope="col"></th>
                             <th scope="col">Name</th>
                             <th scope="col">Team</th>
                             <th scope="col">Environment</th>
@@ -95,7 +97,6 @@
                     <tbody>
                         {% for item in result %}
                             <tr>
-                                <td class="text-center"><a class="me-3" href="/env/request/{{ item.get('Request-ID') }}"><i class="bi bi-folder2-open"></i></a></td>
                                 <td>{{ item.get('access-first-name') }} {{ item.get('access-last-name') }}</td>
                                 <td>{{ item.get('access-team') }}</td>
                                 <td>{{ item.get('access-environment') }}</td>
@@ -126,9 +127,9 @@
                                         </span>
                                     </td>
                                 {% endif %}
-                                {% if request.has_permission('admin') %}
-                                    <td><a href="/env/admin/{{ item.get('Request-ID')}}"><i class="bi bi-gear"></i></a></td>
-                                {% endif %}
+                                <td>
+                                    <a class="me-3" href="/env/request/{{ item.get('Request-ID') }}"><i class="bi bi-folder2-open"></i></a>
+                                </td>
                             </tr>
                         {% endfor %}
                     </tbody>
@@ -139,35 +140,6 @@
         {% endif %}
     </div>
 </div>
-<!-- Pagination Links -->
-<div class="mb-5 d-flex justify-content-end">
-    <nav aria-label="Page navigation example">
-        <ul class="pagination">
-            {% if page > 1 %}
-                <li class="page-item"><a class="page-link" href="?page={{ page - 1 }}"><span aria-hidden="true">&laquo;&nbsp;</span> Previous</a></li>
-            {% endif %}
-            <li class="page-item"><a class="page-link" href="?page={{page}}">{{page}}</a></li>
-            {% if page < total_pages %}
-                <li class="page-item"><a class="page-link" href="?page={{ page + 1 }}">Next <span aria-hidden="true">&nbsp;&raquo;</span></a></li>
-            {% endif %}
-        </ul>
-    </nav>
-</div>
-<!-- Flash Message -->
-{% if "Record Deleted" in message %}
-    <div class="alert alert-danger shadow flash-message" id="flashMessage" role="alert">
-        <p class="text-center"><i class="bi bi-trash3 text-white" style="font-size: 2.5rem;"></i></p>
-        <h5 class="fw-normal text-white text-center mt-3">The record has been deleted</h5>
-        <p class="text-center text-white-50">Your request has been deleted successfully and the requester has been notified.</p>
-    </div>
-{% endif %}
-{% if "Record Submitted" in message %}
-    <div class="alert alert-success shadow flash-message" id="flashMessage" role="alert">
-        <p class="text-center"><i class="bi bi-check-circle-fill text-white" style="font-size: 2.5rem;"></i></p>
-        <h5 class="fw-normal text-white text-center mt-3">Thanks for your request!</h5>
-        <p class="text-center text-white-50">Your request has been submitted successfully and we'll be in touch.</p>
-    </div>
-{% endif %}
 <!-- Automatically apply filters when selected -->
 <script>
     const filterElements = document.querySelectorAll('select');

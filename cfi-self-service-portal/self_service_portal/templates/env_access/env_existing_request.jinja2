@@ -100,7 +100,7 @@
                     <h2 class="h5 my-3 ps-2">Admin Comments</h2>
                 </div>
                 <div class="card-body pt-4 ps-4">
-                    {% if admin_comments != "" %}
+                    {% if admin_comments %}
                         <ul class="timeline-with-icons">
                             <li class="timeline-item mb-4">
                                 <span class="timeline-icon bg-primary">
@@ -118,7 +118,7 @@
             </div>
         {% endif %}
         <!-- Pending Actions -->
-        {% if status == "Pending" %}
+        {% if status == "Pending" and request.has_permission('admin') %}
             <p class="mt-4 text-end">
                 <button type="button" class="btn btn-success me-2" data-bs-toggle="modal" data-bs-target="#approveModal"><i class="bi bi-check"></i> Approve</button>
                 <button type="button" class="btn btn-danger"  data-bs-toggle="modal" data-bs-target="#denyModal"><i class="bi bi-x"></i> Deny</button>
