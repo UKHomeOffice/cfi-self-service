@@ -566,15 +566,6 @@ def env_export_data_view_post(data):
             csv_content += ','.join(map(str, row.values())) + '\n'
     return csv_content
 
-####################################################################################################
-# TO DO LIST:
-    # Work through the AWS App Runner workshop that's in Chrome favourites
-    # Setup GitHub Actions pipeline to create AWS App Runner image off the back of the workshop
-    # Keep the Update URL function in for now - setup API integration in futher issue down the line
-    # Look to integrate ADFS Cognito into the application (maybe use hosted UI as evidence will be
-    # there in GitHub for Cognito API for portfolio)
-####################################################################################################
-
 def get_approved_environments(request):
     # Create the connection to the DynamoDB table:
     region_name = request.registry.settings.get('dynamodb.region_name')
@@ -591,5 +582,3 @@ def get_approved_environments(request):
     # Arrange the records by status and request date:
     sorted_items = sorted(items, key=lambda x: ( x.get('access-environment') ))
     return sorted_items
-
-####################################################################################################
