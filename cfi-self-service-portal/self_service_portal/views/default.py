@@ -1,8 +1,9 @@
 
 import math
+import os
 import uuid
 from datetime import datetime
-from boto3.dynamodb.conditions import Key
+from boto3.dynamodb.conditions import Key, Attr
 from pyramid.httpexceptions import HTTPFound, HTTPNotFound
 from pyramid.response import Response
 from pyramid.security import forget, remember
@@ -102,6 +103,11 @@ def logout(request):
 def home_view(request):
     return { 'subtitle': 'Self Service Portal', 'title': 'Home' }
 
+######################################################################################
+######################################################################################
+######################################################################################
+######################################################################################
+
 @view_config(route_name='env-dashboard', renderer='self_service_portal:templates/env_access/env_dashboard.jinja2', permission='protected')
 def env_dashboard_view(request):
     # Pop the flash message up on return on HTTP POST:
@@ -119,23 +125,23 @@ def env_dashboard_view(request):
     scan_parameters = {}
     expression_attribute_names = {}
     expression_attribute_values = {}
-    condition_expression = None
+    status_condition = None
     environment_condition = None
     if selected_status:
-        condition_expression = '#access_status = :status'
+        status_condition = '#access_status = :status'
         expression_attribute_names['#access_status'] = 'access-status'
         expression_attribute_values[':status'] = selected_status
     if selected_environment:
         environment_condition = '#access_environment = :environment'
-        if condition_expression :
-            condition_expression = condition_expression + ' AND ' + environment_condition
+        if status_condition :
+            status_condition = status_condition + ' AND ' + environment_condition
         else:
-            condition_expression = environment_condition
+            status_condition = environment_condition
         expression_attribute_names['#access_environment'] = 'access-environment'
         expression_attribute_values[':environment'] = selected_environment
     # Perform a query to fetch records from DynamoDB with the conditions:
     if selected_status or selected_environment:
-        scan_parameters['FilterExpression'] = condition_expression
+        scan_parameters['FilterExpression'] = status_condition
         scan_parameters['ExpressionAttributeNames'] = expression_attribute_names
         scan_parameters['ExpressionAttributeValues'] = expression_attribute_values
     try:
@@ -382,26 +388,26 @@ def env_export_data_view(request):
     selected_status = form_data.get('status')
     selected_environment = form_data.get('environment')
     # Define condition expressions and attribute values based on the selected filters:
-    condition_expression = None
+    status_condition = None
     environment_condition = None
     scan_parameters = {}
     expression_attribute_names = {}
     expression_attribute_values = {}
     if selected_status:
-        condition_expression = '#access_status = :status'
+        status_condition = '#access_status = :status'
         expression_attribute_names['#access_status'] = 'access-status'
         expression_attribute_values[':status'] = selected_status
     if selected_environment:
         environment_condition = '#access_environment = :environment'
-        if condition_expression :
-            condition_expression = condition_expression + ' AND ' + environment_condition
+        if status_condition :
+            status_condition = status_condition + ' AND ' + environment_condition
         else:
-            condition_expression = environment_condition
+            status_condition = environment_condition
         expression_attribute_names['#access_environment'] = 'access-environment'
         expression_attribute_values[':environment'] = selected_environment
     # Perform a query to fetch records from DynamoDB with the conditions:
     if selected_status or selected_environment:
-        scan_parameters['FilterExpression'] = condition_expression
+        scan_parameters['FilterExpression'] = status_condition
         scan_parameters['ExpressionAttributeNames'] = expression_attribute_names
         scan_parameters['ExpressionAttributeValues'] = expression_attribute_values
     try:
@@ -441,9 +447,15 @@ def env_export_data_view(request):
         'status_counts': status_counts
     }
 
+######################################################################################
+######################################################################################
+######################################################################################
+######################################################################################
+
 @view_config(route_name='env-generate', renderer='self_service_portal:templates/env_generate/env_generate_url.jinja2', permission='protected')
 def env_generate_view(request):
-    return { 'subtitle': 'Environment URL\'s', 'title': 'Generate Environment URL' }
+    approved_environments = get_approved_environments(request)
+    return { 'subtitle': 'Environment URL\'s', 'title': 'Generate Environment URL', 'environments': approved_environments }
 
 @view_config(route_name='env-update', renderer='self_service_portal:templates/env_generate/env_update_url.jinja2', permission='protected')
 def env_update_view(request):
@@ -525,6 +537,8 @@ def multi_factor_auth_setup_post_action(request):
     cognito_instance = Cognito(request)
     cognito_instance.handle_verify_software_token(request, verification_code)
     cognito_instance.handle_mfa_user_preferences()
+    # Delete the QR code as it's no longer needed:
+    os.remove(request.session['qr_code_path'])
     # Use the HTTPFound function to perform a redirection to the change password screen:
     request.session.flash('MFA Setup')
     redirect_url = request.route_url('login')
@@ -551,3 +565,31 @@ def env_export_data_view_post(data):
         for row in data:
             csv_content += ','.join(map(str, row.values())) + '\n'
     return csv_content
+
+####################################################################################################
+# TO DO LIST:
+    # Work through the AWS App Runner workshop that's in Chrome favourites
+    # Setup GitHub Actions pipeline to create AWS App Runner image off the back of the workshop
+    # Keep the Update URL function in for now - setup API integration in futher issue down the line
+    # Look to integrate ADFS Cognito into the application (maybe use hosted UI as evidence will be
+    # there in GitHub for Cognito API for portfolio)
+####################################################################################################
+
+def get_approved_environments(request):
+    # Create the connection to the DynamoDB table:
+    region_name = request.registry.settings.get('dynamodb.region_name')
+    table_name = request.registry.settings.get('dynamodb.table_name')
+    dynamodb_service = DynamoDB(region_name, table_name)
+    dynamodb_table = dynamodb_service.get_table()
+    # Perform a query to fetch records from DynamoDB with the conditions:
+    try:
+        response = dynamodb_table.scan(FilterExpression=Attr('access-status').eq("Approved") & Key('access-email-address').eq(request.authenticated_userid))
+    except Exception as e:
+        raise HTTPNotFound from e
+    # Extract the items and last evaluated key from the response:
+    items = response.get('Items', [])
+    # Arrange the records by status and request date:
+    sorted_items = sorted(items, key=lambda x: ( x.get('access-environment') ))
+    return sorted_items
+
+####################################################################################################

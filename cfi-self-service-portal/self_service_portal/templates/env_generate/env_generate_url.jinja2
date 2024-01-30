@@ -1,47 +1,21 @@
 {% extends "../layout.jinja2" %}
 {% block content %}
 <div class="row">
-    <!-- Test Environment -->
-    <div class="col-12 mb-5 col-md-6 mb-lg-0 col-lg-4">
-        <div class="card shadow">
-            <div class="card-header">
-                <i class="bi bi-pc-display menu-icon"></i>
-            </div>
-            <div class="card-body">
-                <p class="mt-2 mb-1"><small>Environment</small></p>
-                <h5 class="card-title fw-medium">Test</h5>
-                <h6 class="card-subtitle mt-3">You have access to the <strong>Test</strong> environment. Click on the button below to generate and display a URL for this environment.</h6>
-                <p><a href="/env/generate/" role="button" class="btn btn-primary mt-4"><i class="bi bi-link me-2"></i> Display URL</a></p>            
-            </div>
-        </div>
-    </div>
-    <!-- Development Environment -->
-    <div class="col-12 mb-5 col-md-6 mb-lg-0 col-lg-4">
-        <div class="card shadow">
-            <div class="card-header">
-                <i class="bi bi-pc-display menu-icon"></i>
-            </div>
-            <div class="card-body">
-                <p class="mt-2 mb-1"><small>Environment</small></p>
-                <h5 class="card-title fw-medium">Development</h5>
-                <h6 class="card-subtitle mt-3">You have access to the <strong>Development</strong> environment. Click on the button below to generate and display a URL for this environment.</h6>
-                <p><a href="/env/generate/" role="button" class="btn btn-primary mt-4"><i class="bi bi-link me-2"></i> Display URL</a></p>            
+    {% for item in environments %}
+        <!-- Environment -->
+        <div class="col-12 mb-5 col-md-6 mb-lg-0 col-lg-4">
+            <div class="card shadow">
+                <div class="card-header">
+                    <i class="bi bi-pc-display menu-icon"></i>
+                </div>
+                <div class="card-body">
+                    <p class="mt-2 mb-1"><small>Environment</small></p>
+                    <h5 class="card-title fw-medium">{{ item.get('access-environment') }}</h5>
+                    <h6 class="card-subtitle mt-3">You have access to the <strong>{{ item.get('access-environment') }}</strong> environment. Click on the button below to generate and display a URL for this environment.</h6>
+                    <p><a href="/env/generate/" role="button" class="btn btn-primary mt-4"><i class="bi bi-link me-2"></i> Display URL</a></p>            
+                </div>
             </div>
         </div>
-    </div>
-    <!-- Production Environment -->
-    <div class="col-12 mb-5 col-md-6 mb-lg-0 col-lg-4">
-        <div class="card shadow">
-            <div class="card-header">
-                <i class="bi bi-pc-display menu-icon"></i>
-            </div>
-            <div class="card-body">
-                <p class="mt-2 mb-1"><small>Environment</small></p>
-                <h5 class="card-title fw-medium">Production</h5>
-                <h6 class="card-subtitle mt-3">You have access to the <strong>Production</strong> environment. Click on the button below to generate and display a URL for this environment.</h6>
-                <p><a href="/env/generate/" role="button" class="btn btn-primary mt-4"><i class="bi bi-link me-2"></i> Display URL</a></p>            
-            </div>
-        </div>
-    </div>
+    {% endfor %}
 </div>
 {% endblock content %}
