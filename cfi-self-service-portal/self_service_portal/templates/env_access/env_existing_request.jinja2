@@ -12,31 +12,31 @@
                     <div class="row">
                         <div class="col-12 col-lg-6 mb-3 mb-lg-0">
                             <label class="col-form-label fw-medium">Name</label>
-                            <p>{{ first_name }} {{ last_name }}</p>
+                            <p>{{ requester_info.first_name }} {{ requester_info.last_name }}</p>
                         </div>
                         <div class="col-12 col-lg-6 mb-3 mb-lg-0">
                             <label class="col-form-label fw-medium">Email Address</label>
-                            <p>{{ email_address }}</p>
+                            <p>{{ requester_info.email_address }}</p>
                         </div>
                     </div>
                     <div class="row">
                         <div class="col-12 col-lg-6 mb-3 mb-lg-0">
                             <label class="col-form-label fw-medium">Team</label>
-                            <p>{{ team }}</p>
+                            <p>{{ requester_info.team }}</p>
                         </div>
                         <div class="col-12 col-lg-6 mb-3 mb-lg-0">
                             <label class="col-form-label fw-medium">Environment</label>
-                            <p>{{ environment }}</p>
+                            <p>{{ requester_info.environment }}</p>
                         </div>
                     </div>
                     <div class="row">
                         <div class="col-12 col-lg-6 mb-3 mb-lg-0">
                             <label class="col-form-label fw-medium">Request Date</label>
-                            <p>{{ request_date }}</p>
+                            <p>{{ requester_info.request_date }}</p>
                         </div>
                         <div class="col-12 col-lg-6 mb-3 mb-lg-0">
                             <label class="col-form-label fw-medium">Comments</label>
-                            <p>{{ comments }}</p>
+                            <p>{{ requester_info.comments }}</p>
                         </div>
                     </div>
                 </div>
@@ -48,17 +48,17 @@
             <div class="card-header">
                 <h2 class="h5 my-3 ps-2">Request Status</h2>
                 <p class="ps-2">
-                    {% if status == "Pending" %}
+                    {% if requester_info.status == "Pending" %}
                         <span class="badge text-bg-warning fw-normal">
                             <i class="bi bi-stopwatch me-2"></i>
-                    {% elif status == "Approved" %}
+                    {% elif requester_info.status == "Approved" %}
                         <span class="badge text-bg-success fw-normal">
                             <i class="bi bi-check text-white me-2"></i>
-                    {% elif status == "Denied" %}
+                    {% elif requester_info.status == "Denied" %}
                         <span class="badge text-bg-danger fw-normal">
                             <i class="bi bi-x text-white me-2"></i>
                     {% endif %}
-                        {{status}}
+                        {{requester_info.status}}
                     </span>
                 </p>
             </div>
@@ -76,9 +76,9 @@
                                     <i class="bi bi-x text-white"></i>
                                 </span>
                             {% endif %}
-                            <h5 class="h6">{{admin_name}}</h5>
-                            <p class="text-muted small mb-3">{{admin_response_date}}</p>
-                            <p class="text-muted small">This request was <strong>{{status}}</strong> by {{admin_name}} on {{admin_response_date}}.</p>
+                            <h5 class="h6">{{requester_info.admin_name}}</h5>
+                            <p class="text-muted small mb-3">{{requester_info.admin_response_date}}</p>
+                            <p class="text-muted small">This request was <strong>{{requester_info.status}}</strong> by {{requester_info.admin_name}} on {{requester_info.admin_response_date}}.</p>
                         </li>
                     {% endif %}
                     <!-- Request Submission -->
@@ -86,15 +86,15 @@
                         <span class="timeline-icon bg-secondary">
                             <i class="bi bi-person text-white"></i>
                         </span>
-                        <h5 class="h6">{{first_name}} {{last_name}}</h5>
-                        <p class="text-muted small mb-3">{{request_date}}</p>
-                        <p class="text-muted small">The request was <strong>Submitted</strong> by {{first_name}} {{last_name}} on {{request_date}}.</p>
+                        <h5 class="h6">{{requester_info.first_name}} {{requester_info.last_name}}</h5>
+                        <p class="text-muted small mb-3">{{requester_info.request_date}}</p>
+                        <p class="text-muted small">The request was <strong>Submitted</strong> by {{requester_info.first_name}} {{requester_info.last_name}} on {{requester_info.request_date}}.</p>
                     </li>
                 </ul>
             </div>
         </div>
         <!-- Admin Comments -->
-        {% if status == "Approved" or status == "Denied" %}
+        {% if requester_info.status == "Approved" or requester_info.status == "Denied" %}
             <div class="card shadow mt-4">
                 <div class="card-header">
                     <h2 class="h5 my-3 ps-2">Admin Comments</h2>
@@ -106,9 +106,9 @@
                                 <span class="timeline-icon bg-primary">
                                     <i class="bi bi-chat-square text-white"></i>
                                 </span>
-                                <h5 class="h6">{{admin_name}}</h5>
-                                <p class="text-muted small mb-3">{{admin_response_date}}</p>
-                                <p class="text-muted small">{{admin_comments}}</p>
+                                <h5 class="h6">{{requester_info.admin_name}}</h5>
+                                <p class="text-muted small mb-3">{{requester_info.admin_response_date}}</p>
+                                <p class="text-muted small">{{requester_info.admin_comments}}</p>
                             </li>
                         </ul>
                     {% else %}
@@ -118,7 +118,7 @@
             </div>
         {% endif %}
         <!-- Pending Actions -->
-        {% if status == "Pending" and request.has_permission('admin') %}
+        {% if requester_info.status == "Pending" and request.has_permission('admin') %}
             <p class="mt-4 text-end">
                 <button type="button" class="btn btn-success me-2" data-bs-toggle="modal" data-bs-target="#approveModal"><i class="bi bi-check"></i> Approve</button>
                 <button type="button" class="btn btn-danger"  data-bs-toggle="modal" data-bs-target="#denyModal"><i class="bi bi-x"></i> Deny</button>

@@ -1,21 +1,31 @@
 {% extends "../layout.jinja2" %}
 {% block content %}
 <div class="row">
-    {% for item in environments %}
-        <!-- Environment -->
-        <div class="col-12 mb-5 col-md-6 mb-lg-0 col-lg-4">
-            <div class="card shadow">
-                <div class="card-header">
-                    <i class="bi bi-pc-display menu-icon"></i>
+    {% if environments %}
+        {% for item in environments %}
+            <!-- Environment -->
+            <div class="col-12 mb-5 col-md-6 mb-lg-0 col-lg-4">
+                <div class="card shadow">
+                    <div class="card-header">
+                        <i class="bi bi-pc-display menu-icon" style="font-size: 1.75em;"></i>
+                    </div>
+                    <div class="card-body">
+                        <p class="mt-2 mb-1"><small>Environment</small></p>
+                        <h5 class="card-title fw-medium">{{ item.get('access-environment') }}</h5>
+                        <h6 class="card-subtitle mt-3">You have access to the <strong>{{ item.get('access-environment') }}</strong> environment. Click on the button below to generate and display a URL for this environment.</h6>
+                        <p><a href="/env/generate/" role="button" class="btn btn-outline-primary mt-4"><i class="bi bi-link me-2"></i> Display URL</a></p>                    
+                    </div>
                 </div>
+            </div>
+        {% endfor %}
+    {% else %}
+        <div class="col-12">
+            <div class="card shadow mb-4">
                 <div class="card-body">
-                    <p class="mt-2 mb-1"><small>Environment</small></p>
-                    <h5 class="card-title fw-medium">{{ item.get('access-environment') }}</h5>
-                    <h6 class="card-subtitle mt-3">You have access to the <strong>{{ item.get('access-environment') }}</strong> environment. Click on the button below to generate and display a URL for this environment.</h6>
-                    <p><a href="/env/generate/" role="button" class="btn btn-primary mt-4"><i class="bi bi-link me-2"></i> Display URL</a></p>            
+                    <p class="lead text-center mb-0 py-4">There are no records to display.</p>
                 </div>
             </div>
         </div>
-    {% endfor %}
+    {% endif %}
 </div>
 {% endblock content %}
