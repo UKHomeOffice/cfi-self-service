@@ -5,7 +5,6 @@ from setuptools import setup, find_packages
 here = os.path.abspath(os.path.dirname(__file__))
 
 requires = [
-    'bcrypt',
     'plaster_pastedeploy',
     'pyramid',
     'pyramid_jinja2',
@@ -21,7 +20,7 @@ tests_require = [
 
 setup(
     name='self_service_portal',
-    version='0.0',
+    version='1.0',
     description='self_service_portal',
     long_description='',
     classifiers=[

@@ -36,8 +36,8 @@ GROUPS = load_groups_from_file()
 
 class SecurityPolicy:
 
-    def __init__(self, secret):
-        self.authtkt = AuthTktCookieHelper(secret=secret)
+    def __init__(self, secret, timeout):
+        self.authtkt = AuthTktCookieHelper(secret=secret, timeout=timeout)
         self.acl = ACLHelper()
 
     def identity(self, request):
