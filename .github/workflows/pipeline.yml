@@ -11,9 +11,12 @@ permissions:
 
 jobs:  
   deploy:
+    defaults:
+      run:
+        working-directory: cfi-self-service-portal
     runs-on: ubuntu-latest
     
-    steps:            
+    steps:
       - name: configure aws credentials
         uses: aws-actions/configure-aws-credentials@v4
         with:
@@ -30,7 +33,7 @@ jobs:
           repo: https://github.com/${{ github.repository }}
           branch: ${{ github.ref }}
           runtime: NODEJS_12
-          build-command: pip install -e .
+          build-command: pip install setup.py
           start-command: pserve production.ini
           port: 18000
           region: ${{ secrets.AWS_REGION }}
