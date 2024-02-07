@@ -32,7 +32,7 @@ jobs:
           runtime: PYTHON_3
           build-command: cd cfi-self-service-portal && pip install -r requirements.txt
           start-command: pserve production.ini
-          port: 18000
+          port: 6543
           region: ${{ secrets.AWS_REGION }}
           cpu : 1
           memory : 2
