@@ -1,0 +1,38 @@
+
+name: Deploy to App Runner - Source # Name of the workflow
+on:
+  push:
+    branches: [ main ] # Trigger workflow on git push to main branch
+  workflow_dispatch: # Allow manual invocation of the workflow
+
+jobs:  
+  deploy:
+    runs-on: ubuntu-latest
+    
+    steps:            
+      - name: configure aws credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-region: ${{ secrets.AWS_REGION }}
+          role-to-assume: ${{ secrets.AWS_ROLE_TO_ASSUME_DEV }}
+          role-session-name: GITHUBACTIONSESSION
+
+      - name: Deploy to App Runner
+        id: deploy-apprunner
+        uses: awslabs/amazon-app-runner-deploy@main # Deploy app runner service
+        with:
+          service: app-runner-git-deploy-service
+          source-connection-arn: ${{ secrets.AWS_CONNECTION_SOURCE_ARN }}
+          repo: https://github.com/${{ github.repository }}
+          branch: ${{ github.ref }}
+          runtime: NODEJS_12
+          build-command: pip install -e .
+          start-command: pserve production.ini
+          port: 18000
+          region: ${{ secrets.AWS_REGION }}
+          cpu : 1
+          memory : 2
+          wait-for-service-stability: true
+      
+      - name: App Runner output
+        run: echo "App runner output ${{ steps.deploy-apprunner.outputs.service-id }}" 
