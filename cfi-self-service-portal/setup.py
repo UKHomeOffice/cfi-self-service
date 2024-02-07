@@ -20,7 +20,7 @@ tests_require = [
 
 setup(
     name='self_service_portal',
-    version='0.0',
+    version='1.0',
     description='self_service_portal',
     long_description='',
     classifiers=[

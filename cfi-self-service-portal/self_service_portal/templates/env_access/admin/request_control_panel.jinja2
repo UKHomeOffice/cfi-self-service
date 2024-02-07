@@ -13,41 +13,41 @@
                         <div class="row">
                             <div class="col-12 col-lg-6 mb-3 mb-lg-0">
                                 <label class="col-form-label fw-medium">First Name</label>
-                                <input class="form-control" name="firstName" value="{{ first_name }}" />
+                                <input class="form-control" name="firstName" value="{{ requester_info.first_name }}" />
                             </div>
                             <div class="col-12 col-lg-6 mb-3 mb-lg-0">
                                 <label class="col-form-label fw-medium">Last Name</label>
-                                <input class="form-control" name="lastName" value="{{ last_name }}" />
+                                <input class="form-control" name="lastName" value="{{ requester_info.last_name }}" />
                             </div>
                         </div>
                         <div class="row mt-lg-3">
                             <div class="col-12 col-lg-6 mb-3 mb-lg-0">
                                 <label class="col-form-label fw-medium">Email Address</label>
-                                <input type="email" class="form-control" name="emailAddress" value="{{ email_address }}" />
+                                <input type="email" class="form-control" name="emailAddress" value="{{ requester_info.email_address }}" />
                             </div>
                             <div class="col-12 col-lg-6 mb-3 mb-lg-0">
                                 <label class="col-form-label fw-medium">Team</label>
-                                <input class="form-control" name="teamName" value="{{ team }}" />
+                                <input class="form-control" name="teamName" value="{{ requester_info.team }}" />
                             </div>
                         </div>
                         <div class="row mt-lg-3">
                             <div class="col-12 col-lg-6 mb-3 mb-lg-0">
                                 <label class="col-form-label fw-medium">Request Date</label>
-                                <input class="form-control" name="requestDate" value="{{ request_date }}" />
+                                <input class="form-control" name="requestDate" value="{{ requester_info.request_date }}" />
                             </div>
                             <div class="col-12 col-lg-6 mb-3 mb-lg-0">
                                 <label class="col-form-label fw-medium">Environment</label>
-                                <input class="form-control" name="environmentRequired" value="{{ environment }}" />
+                                <input class="form-control" name="environmentRequired" value="{{ requester_info.environment }}" />
                             </div>
                         </div>
                         <div class="row mt-lg-3">
                             <div class="col-12 col-lg-6 mb-3 mb-lg-0">
                                 <label class="col-form-label fw-medium">Comments</label>
-                                <textarea class="form-control" name="requestComments" rows="5">{{ comments }}</textarea>
+                                <textarea class="form-control" name="requestComments" rows="5">{{ requester_info.comments }}</textarea>
                             </div>
                             <div class="col-12 col-lg-6 mb-3 mb-lg-0">
                                 <label class="col-form-label fw-medium">Status</label>
-                                <input type="text" class="form-control" name="requestStatus" value="{{ status }}" />
+                                <input type="text" class="form-control" name="requestStatus" value="{{ requester_info.status }}" />
                             </div>
                         </div>
                     </div>
@@ -80,24 +80,24 @@
                 <div class="card-header">
                     <h2 class="h5 my-3 ps-2">Request Status</h2>
                     <p class="ps-2">
-                        {% if status == "Pending" %}
+                        {% if requester_info.status == "Pending" %}
                             <span class="badge text-bg-warning fw-normal">
                                 <i class="bi bi-stopwatch me-2"></i>
-                        {% elif status == "Approved" %}
+                        {% elif requester_info.status == "Approved" %}
                             <span class="badge text-bg-success fw-normal">
                                 <i class="bi bi-check text-white me-2"></i>
-                        {% elif status == "Denied" %}
+                        {% elif requester_info.status == "Denied" %}
                             <span class="badge text-bg-danger fw-normal">
                                 <i class="bi bi-x text-white me-2"></i>
                         {% endif %}
-                            {{status}}
+                            {{requester_info.status}}
                         </span>
                     </p>
                 </div>
                 <div class="card-body pt-4 ps-4">
                     <ul class="timeline-with-icons">
                         <!-- Admin Action -->
-                        {% if status == "Approved" or status == "Denied" %}
+                        {% if requester_info.status == "Approved" or requester_info.status == "Denied" %}
                             <li class="timeline-item mb-5">
                                 {% if status == "Approved" %}
                                     <span class="timeline-icon bg-success">
@@ -108,9 +108,9 @@
                                         <i class="bi bi-x text-white"></i>
                                     </span>
                                 {% endif %}
-                                <h5 class="h6">{{admin_name}}</h5>
-                                <p class="text-muted small mb-3">{{admin_response_date}}</p>
-                                <p class="text-muted small">This request was <strong>{{status}}</strong> by {{admin_name}} on {{admin_response_date}}.</p>
+                                <h5 class="h6">{{requester_info.admin_name}}</h5>
+                                <p class="text-muted small mb-3">{{requester_info.admin_response_date}}</p>
+                                <p class="text-muted small">This request was <strong>{{requester_info.status}}</strong> by {{requester_info.admin_name}} on {{requester_info.admin_response_date}}.</p>
                             </li>
                         {% endif %}
                         <!-- Request Submission -->
@@ -118,9 +118,9 @@
                             <span class="timeline-icon bg-secondary">
                                 <i class="bi bi-person text-white"></i>
                             </span>
-                            <h5 class="h6">{{first_name}} {{last_name}}</h5>
-                            <p class="text-muted small mb-3">{{request_date}}</p>
-                            <p class="text-muted small">The request was <strong>Submitted</strong> by {{first_name}} {{last_name}} on {{request_date}}.</p>
+                            <h5 class="h6">{{requester_info.first_name}} {{requester_info.last_name}}</h5>
+                            <p class="text-muted small mb-3">{{requester_info.request_date}}</p>
+                            <p class="text-muted small">The request was <strong>Submitted</strong> by {{requester_info.first_name}} {{requester_info.last_name}} on {{requester_info.request_date}}.</p>
                         </li>
                     </ul>
                 </div>
@@ -131,15 +131,15 @@
                     <h2 class="h5 my-3 ps-2">Admin Comments</h2>
                 </div>
                 <div class="card-body pt-4 ps-4">
-                    {% if admin_comments != "" %}
+                    {% if admin_comments %}
                         <ul class="timeline-with-icons">
                             <li class="timeline-item mb-4">
                                 <span class="timeline-icon bg-primary">
                                     <i class="bi bi-chat-square text-white"></i>
                                 </span>
-                                <h5 class="h6">{{admin_name}}</h5>
-                                <p class="text-muted small mb-3">{{admin_response_date}}</p>
-                                <p class="text-muted small">{{admin_comments}}</p>
+                                <h5 class="h6">{{requester_info.admin_name}}</h5>
+                                <p class="text-muted small mb-3">{{requester_info.admin_response_date}}</p>
+                                <p class="text-muted small">{{requester_info.admin_comments}}</p>
                             </li>
                         </ul>
                     {% else %}
