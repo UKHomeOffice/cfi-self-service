@@ -33,7 +33,9 @@ jobs:
           repo: https://github.com/${{ github.repository }}
           branch: ${{ github.ref }}
           runtime: PYTHON_3
-          build-command: pip install -r requirements.txt
+          build-command: | 
+                         pwd 
+                         ls
           start-command: pserve production.ini
           port: 18000
           region: ${{ secrets.AWS_REGION }}
