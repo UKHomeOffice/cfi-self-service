@@ -14,12 +14,12 @@ class DynamoDB:
     def connect(self):
         try:
             self.dynamodb = boto3.resource('dynamodb', region_name=self.region_name)
-            self.table = self.dynamodb.Table(self.table_name)
         except Exception as e:
             logger.error(e)
 
     def get_table(self):
         try:
+            self.table = self.dynamodb.Table(self.table_name)
             return self.table
         except Exception as e:
             logger.error(e)

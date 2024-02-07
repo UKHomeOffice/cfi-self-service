@@ -65,13 +65,13 @@
             <div class="card-body pt-4 ps-4">
                 <ul class="timeline-with-icons">
                     <!-- Admin Action -->
-                    {% if status == "Approved" or status == "Denied" %}
+                    {% if requester_info.status == "Approved" or requester_info.status == "Denied" %}
                         <li class="timeline-item mb-5">
-                            {% if status == "Approved" %}
+                            {% if requester_info.status == "Approved" %}
                                 <span class="timeline-icon bg-success">
                                     <i class="bi bi-check text-white"></i>
                                 </span>
-                            {% elif status == "Denied" %}
+                            {% elif requester_info.status == "Denied" %}
                                 <span class="timeline-icon bg-danger">
                                     <i class="bi bi-x text-white"></i>
                                 </span>
@@ -100,7 +100,7 @@
                     <h2 class="h5 my-3 ps-2">Admin Comments</h2>
                 </div>
                 <div class="card-body pt-4 ps-4">
-                    {% if admin_comments %}
+                    {% if requester_info.admin_comments %}
                         <ul class="timeline-with-icons">
                             <li class="timeline-item mb-4">
                                 <span class="timeline-icon bg-primary">
