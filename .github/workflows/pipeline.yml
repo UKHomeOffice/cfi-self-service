@@ -13,7 +13,7 @@ jobs:
   deploy:
     defaults:
       run:
-        working-directory: cfi-self-service-portal
+        working-directory: ./cfi-self-service-portal
     runs-on: ubuntu-latest
     
     steps:
