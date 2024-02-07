@@ -32,8 +32,8 @@ jobs:
           source-connection-arn: ${{ secrets.AWS_CONNECTION_SOURCE_ARN }}
           repo: https://github.com/${{ github.repository }}
           branch: ${{ github.ref }}
-          runtime: NODEJS_12
-          build-command: pip install setup.py
+          runtime: python3
+          build-command: pip install -r requirements.txt
           start-command: pserve production.ini
           port: 18000
           region: ${{ secrets.AWS_REGION }}
