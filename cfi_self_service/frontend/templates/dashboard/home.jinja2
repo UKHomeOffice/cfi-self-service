@@ -1,0 +1,34 @@
+{% extends "../layout.jinja2" %}
+{% block content %}
+  <div class="row">
+    <!-- Access Requests -->
+    <div class="col-12 mb-5 col-md-6">
+      <div class="card shadow h-100">
+        <div class="card-body">
+          <i class="bi bi-person-fill menu-icon"></i>
+          <h5 class="card-title fw-medium mt-3">Access Requests</h5>
+          <h6 class="card-subtitle">Here's where you can create a new and view existing requests for access to an CFI environment.</h6>
+          <p>
+            <a href="/access-requests/" role="button" class="btn btn-primary mt-4"><i class="bi bi-speedometer2 me-2"></i> Dashboard</a>
+            <a href="/access-requests/new/" role="button" class="btn btn-primary btn-primary-light mt-4 mt-lg-3 mt-xl-4 ms-xl-2"><i class="bi bi-plus-circle me-2"></i> New Request</a>
+          </p>
+        </div>
+      </div>  
+    </div>
+    <!-- Environment URL's -->
+    <div class="col-12 mb-5 col-md-6">
+      <div class="card shadow h-100">
+        <div class="card-body">
+          <i class="bi bi-link-45deg menu-icon"></i>
+          <h5 class="card-title fw-medium mt-3">Environment URLs and VPN Profiles</h5>
+          <h6 class="card-subtitle">Here's where you can generate and download the latest VPN profiles and environment URLs.</h6>
+          <p>
+            <a href="/environment-urls-vpn/" role="button" class="btn btn-primary mt-4 me-2"><i class="bi bi-link-45deg me-2"></i> View URLs and VPN Profiles</a>
+            <a href="/environment-urls-vpn/update/" role="button" class="btn btn-primary btn-primary-light mt-4 me-2"><i class="bi bi-pencil-square me-2"></i> Update URLs</a>
+            <a href="/environment-urls-vpn/update/" role="button" class="btn btn-primary btn-primary-light mt-4"><i class="bi bi-pencil-square me-2"></i> Update VPNs</a>
+          </p>
+        </div>
+      </div>  
+    </div>
+  </div>
+{% endblock content %}

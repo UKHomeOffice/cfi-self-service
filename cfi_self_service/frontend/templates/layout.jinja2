@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="{{request.locale_name}}">
+<head>
+  <!-- META Tags -->
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="pyramid web application">
+  <meta name="author" content="Pylons Project">
+  <!-- HTML Title -->
+  <title>{{title}} - CFI Self Service User Portal</title>
+  <!-- Bootstrap Core CSS & Custom Stylesheets -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous" />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.2/font/bootstrap-icons.min.css" />
+  <link href="{{request.static_url('cfi_self_service:frontend/assets/css/theme.min.css')}}" rel="stylesheet" />
+</head>
+<body>
+  <main class="starter-template">
+    <!-- Sub Nav -->
+    <div class="container-fluid sub-nav-header">
+      <div class="container">
+        <nav class="navbar navbar-expand-lg">
+          <div class="container-fluid ps-0 pe-0">
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarText" aria-controls="navbarText" aria-expanded="false" aria-label="Toggle navigation">
+              <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarText">
+              <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                <!-- Navigation Menu -->
+                {% if title in ["Page Not Found"] %}
+                  <li class="nav-item"><span class="nav-link ps-0 text-white">Page Not Found</span></li>
+                {% elif title == "Multi-Factor Authentication Request" or "Login" in title %}
+                  <li class="nav-item"><a class="nav-link ps-0 text-white" href="/">Welcome</a></li>
+                {% else %}
+                  <!-- User Menu -->
+                  <li class="nav-item"><a class="nav-link underline ps-0 text-white" href="/home/">Home</a></li>
+                  <li class="nav-item"><a class="nav-link underline text-white" href="/access-requests/">Access Requests</a></li>
+                  <li class="nav-item"><a class="nav-link underline text-white" href="/environment-urls-vpn/">Environment URLs & VPN Profiles</a></li>
+                {% endif %}
+              </ul>
+              <span class="navbar-text">
+                <!-- New Access Request -->
+                {% if ("Access Requests" in subtitle) or ("Access Requests" in title) %}
+                  <a role="button" href="/access-requests/new/" class="btn btn-sm btn-light me-2"><i class="bi bi-plus-circle me-2"></i> New Request</a>
+                {% endif %}
+                <!-- Update Environment URL's -->
+                {% if "Environment URL" in title %}
+                  <a role="button" href="/environment-urls-vpn/update/" class="btn btn-sm btn-light me-2"><i class="bi bi-link-45deg me-2"></i> Update URL's</a>
+                {% endif %}
+              </span>
+            </div>
+          </div>
+        </nav>
+      </div>
+    </div>
+    <!-- Main Heading -->
+    <div class="container-fluid nav-header">
+      <div class="container">
+        <h5 class="home-link text-white-50">{{subtitle}}</h5>
+        <h1 class="fw-semibold text-white">{{title}}</h1>
+      </div>
+    </div>
+    <!-- Page Content -->
+    <div class="container-fluid {% if title == 'Dashboard' %}mt-neg-dashboard{% else %}mt-neg{% endif %}">
+      <div class="container">
+        {% block content %}
+          <p>No content</p>
+        {% endblock content %}
+      </div>
+    </div>
+  </main>
+  <!-- Bootstrap Core JavaScript -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL" crossorigin="anonymous"></script>
+</body>
+</html>

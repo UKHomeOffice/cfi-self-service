@@ -1,0 +1,170 @@
+{% extends "../layout.jinja2" %}
+{% block content %}
+<form method="post">
+    <!-- Environment Request -->
+    <div class="row mb-5">
+        <div class="col-12 col-lg-7">
+            <div class="card shadow">
+                <div class="card-header">
+                    <h2 class="h4 fw-semibold my-3 ps-2">Environment Request</h2>
+                </div>
+                <div class="card-body">
+                    <div class="mb-3 pt-2 ps-2">
+                        <div class="row">
+                            <div class="col-12 col-lg-6 mb-3 mb-lg-0">
+                                <label class="col-form-label fw-medium">First Name</label>
+                                <input class="form-control" name="firstName" value="{{ access_request.first_name }}" />
+                            </div>
+                            <div class="col-12 col-lg-6 mb-3 mb-lg-0">
+                                <label class="col-form-label fw-medium">Last Name</label>
+                                <input class="form-control" name="lastName" value="{{ access_request.last_name }}" />
+                            </div>
+                        </div>
+                        <div class="row mt-lg-3">
+                            <div class="col-12 col-lg-6 mb-3 mb-lg-0">
+                                <label class="col-form-label fw-medium">Email Address</label>
+                                <input type="email" class="form-control" name="emailAddress" value="{{ access_request.email_address }}" />
+                            </div>
+                            <div class="col-12 col-lg-6 mb-3 mb-lg-0">
+                                <label class="col-form-label fw-medium">Team</label>
+                                <input class="form-control" name="teamName" value="{{ access_request.team }}" />
+                            </div>
+                        </div>
+                        <div class="row mt-lg-3">
+                            <div class="col-12 col-lg-6 mb-3 mb-lg-0">
+                                <label class="col-form-label fw-medium">Request Date</label>
+                                <input class="form-control" name="requestDate" value="{{ access_request.request_date }}" />
+                            </div>
+                            <div class="col-12 col-lg-6 mb-3 mb-lg-0">
+                                <label class="col-form-label fw-medium">Environment</label>
+                                <input class="form-control" name="environmentRequired" value="{{ access_request.environment }}" />
+                            </div>
+                        </div>
+                        <div class="row mt-lg-3">
+                            <div class="col-12 col-lg-6 mb-3 mb-lg-0">
+                                <label class="col-form-label fw-medium">Request Comments</label>
+                                <textarea class="form-control" name="requestComments" rows="5">{{ access_request.comments }}</textarea>
+                            </div>
+                            <div class="col-12 col-lg-6 mb-3 mb-lg-0">
+                                <label class="col-form-label fw-medium">Status</label>
+                                <input type="text" class="form-control" name="requestStatus" value="{{ access_request.status }}" />
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-12 col-lg-4 offset-lg-1 mt-4 mt-lg-0">
+            <!-- Control Panel -->
+            <div class="card shadow">
+                <div class="card-header">
+                    <h2 class="h5 fw-semibold my-3 ps-2">Control Panel</h2>
+                </div>
+                <div class="card-body pt-4 ps-4">
+                    <!-- Amend Request -->
+                    <div>
+                        <h3 class="h6">Amend Request</h3>
+                        <p>You can a amend a request by making the changes required to the form and clicking the button below.</p>
+                        <p><button type="submit" href="#" name="AdminControlPanel" value="Update" class="btn btn-success"><i class="bi bi-floppy2 me-2"></i> Update Request</button></p>
+                    </div>
+                    <!-- Cancel Request -->
+                    <div class="mt-4">
+                        <h3 class="h6">Cancel Request</h3>
+                        <p>You can a cancel a request but please be certain when completing this action.</p>
+                        <p><button type="button" class="btn btn-danger"  data-bs-toggle="modal" data-bs-target="#deleteModal"><i class="bi bi-trash3 me-2"></i> Delete Request</button></p>
+                    </div>
+                </div>
+            </div>
+            <!-- Request Status -->
+            <div class="card shadow mt-5">
+                <div class="card-header">
+                    <h2 class="h5 fw-semibold my-3 ps-2">Request Status</h2>
+                    <p class="ps-2">
+                        {% if access_request.status == "Pending" %}
+                            <span class="badge text-bg-warning fw-normal">
+                                <i class="bi bi-stopwatch me-2"></i>
+                        {% elif access_request.status == "Approved" %}
+                            <span class="badge text-bg-success fw-normal">
+                                <i class="bi bi-check text-white me-2"></i>
+                        {% elif access_request.status == "Denied" %}
+                            <span class="badge text-bg-danger fw-normal">
+                                <i class="bi bi-x text-white me-2"></i>
+                        {% endif %}
+                            {{access_request.status}}
+                        </span>
+                    </p>
+                </div>
+                <div class="card-body pt-4 ps-4">
+                    <ul class="timeline-with-icons">
+                        <!-- Admin Action -->
+                        {% if access_request.status == "Approved" or access_request.status == "Denied" %}
+                            <li class="timeline-item mb-5">
+                                {% if access_request.status == "Approved" %}
+                                    <span class="timeline-icon bg-success">
+                                        <i class="bi bi-check text-white"></i>
+                                    </span>
+                                {% elif access_request.status == "Denied" %}
+                                    <span class="timeline-icon bg-danger">
+                                        <i class="bi bi-x text-white"></i>
+                                    </span>
+                                {% endif %}
+                                <h5 class="h6 fw-semibold">{{access_request.admin_name}}</h5>
+                                <p class="text-muted small mb-3">{{access_request.admin_response_date}}</p>
+                                <p class="text-muted small">This request was <strong>{{access_request.status}}</strong> by {{access_request.admin_name}} on {{access_request.admin_response_date}}.</p>
+                            </li>
+                        {% endif %}
+                        <!-- Request Submission -->
+                        <li class="timeline-item mb-4">
+                            <span class="timeline-icon bg-secondary">
+                                <i class="bi bi-person text-white"></i>
+                            </span>
+                            <h5 class="h6 fw-semibold">{{access_request.first_name}} {{access_request.last_name}}</h5>
+                            <p class="text-muted small mb-3">{{access_request.request_date}}</p>
+                            <p class="text-muted small">The request was <strong>Submitted</strong> by {{access_request.first_name}} {{access_request.last_name}} on {{access_request.request_date}}.</p>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+            <!-- Admin Comments -->
+            <div class="card shadow mt-5">
+                <div class="card-header">
+                    <h2 class="h5 fw-semibold my-3 ps-2">Admin Comments</h2>
+                </div>
+                <div class="card-body pt-4 ps-4">
+                    {% if access_request.admin_comments %}
+                        <ul class="timeline-with-icons">
+                            <li class="timeline-item mb-4">
+                                <span class="timeline-icon bg-primary">
+                                    <i class="bi bi-chat-square text-white"></i>
+                                </span>
+                                <h5 class="h6 fw-semibold">{{access_request.admin_name}}</h5>
+                                <p class="text-muted small mb-3">{{access_request.admin_response_date}}</p>
+                                <p class="text-muted small">{{access_request.admin_comments}}</p>
+                            </li>
+                        </ul>
+                    {% else %}
+                        <p>There are no admin comments to show for this request.</p>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Delete Request Modal -->
+    <div class="modal fade" id="deleteModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header bg-danger">
+                    <h1 class="modal-title text-white fs-5">Cancel Request</h1>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="mb-2">
+                        <label class="col-form-label fw-medium">Are you certain that you would like to cancel this request and delete the record?</label>
+                    </div>
+                    <button type="submit" href="#" name="AdminControlPanel" value="Delete" class="btn btn-danger"><i class="bi bi-trash3 me-2"></i> Delete Request</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</form>
+{% endblock content %}

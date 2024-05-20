@@ -1,0 +1,71 @@
+{% extends "../layout.jinja2" %}
+{% block content %}
+<form method="post" id="new-request-form" onsubmit="return validateForm()">
+    <div class="row">
+        <div class="col-12 col-lg-7">
+            <div class="card shadow h-100">
+                <div class="card-header">
+                    <h2 class="h4 fw-semibold my-3 ps-2">Environment Request</h2>
+                </div>
+                <div class="card-body">
+                    <div class="mb-3 pt-2 ps-2">
+                        <div class="row">
+                            <div class="col-12 col-lg-6 mb-3 mb-lg-0">
+                                <label for="firstName" class="col-form-label">First Name</label>
+                                <input type="text" class="form-control" name="firstName" id="formFirstName" aria-label="First name" />
+                                <span id="firstNameError" class="text-danger small pt-3"></span>
+                            </div>
+                            <div class="col-12 col-lg-6 mb-3 mb-lg-0">
+                                <label for="lastName" class="col-form-label">Last Name</label>
+                                <input type="text" class="form-control" name="lastName" id="formLastName" aria-label="Last name" />
+                                <span id="lastNameError" class="text-danger small pt-3"></span>
+                            </div>
+                        </div>
+                        <div class="row mt-lg-3">
+                            <div class="col-12 col-lg-6 mb-3 mb-lg-0">
+                                <label for="emailAddress" class="col-form-label">Email Address</label>
+                                <input type="email" class="form-control" name="emailAddress" id="formEmailAddress" placeholder="e.g. name@homeoffice.gov.uk" />
+                                <span id="emailAddressError" class="text-danger small pt-3"></span>
+                            </div>
+                            <div class="col-12 col-lg-6 mb-3 mb-lg-0">
+                                <label for="teamName" class="col-form-label">Team</label>
+                                <input type="text" class="form-control" name="teamName" id="formTeamName" />
+                                <span id="teamNameError" class="text-danger small pt-3"></span>
+                            </div>
+                        </div>
+                        <div class="row mt-lg-3">
+                            <div class="col-12">
+                                <label for="environmentRequired" class="form-label">Environment</label>
+                                <select class="form-control" name="environmentRequired" id="formEnvironmentReq">
+                                    <option disabled selected>Please select</option>
+                                    <option value="Test">Test</option>
+                                    <option value="Development">Development</option>
+                                    <option value="Production">Production</option>
+                                </select>
+                                <span id="environmentReqError" class="text-danger small pt-3"></span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-12 col-lg-4 offset-lg-1 mt-4 mt-lg-0">
+            <div class="card shadow h-100">
+                <div class="card-header">
+                    <h2 class="h5 fw-semibold my-3 ps-2">Request Comments</h2>
+                </div>
+                <div class="card-body">
+                    <div class="mb-3 pt-2 ps-2">
+                        <label for="requestComments" class="col-form-label">Would you like to leave any comments?</label>
+                        <textarea class="form-control" name="requestComments" rows="9"></textarea>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <p class="text-end mb-5">
+        <button type="submit" class="btn btn-success mt-5" value="Submit"><i class="bi bi-check"></i> Submit Request</button>
+    </p>
+</form>
+<script src="{{request.static_url('cfi_self_service:frontend/assets/js/form-validation.js')}}"></script>
+{% endblock content %}

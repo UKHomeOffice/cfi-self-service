@@ -1,0 +1,41 @@
+{% extends "layout.jinja2" %}
+{% block content %}
+<div class="row">
+    <div class="col-12 col-lg-7">
+        <div class="card shadow">
+            <div class="card-header">
+                <h2 class="h4 my-3 ps-2">{{title}}</h2>
+            </div>
+            <div class="card-body">
+                <div class="mb-3 pt-2 ps-2">
+                    <p>The page you are looking for is either encountering issues or can't be found.</p>
+                    <h5>Possible Causes</h5>
+                    <ul>
+                        <li>Invalid URL: Please ensure that the URL entered is correct.</li>
+                        <li>Outdated Link: The page you are trying to reach may have been moved or deleted. Check if there is an updated link available.</li>
+                    </ul>
+                    {% if error_message %}
+                        <h5>Technical Details</h5>
+                        <p class="text-danger">{{error_message}}</p>
+                    {% endif %}
+                    <p class="mt-4"><button onclick="history.back()" class="btn btn-primary">Go Back</button></p>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-12 col-lg-4 offset-lg-1">
+        <!-- Need Assistance? -->
+        <div class="card shadow">
+            <div class="card-header">
+                <h2 class="h4 my-3 ps-2">Need assistance?</h2>
+            </div>
+            <div class="card-body">
+                <div class="mb-3 pt-2 ps-2">
+                    <p>If you require further assistance or have encountered persistent issues, please feel free contact the support team on Slack at <span class="text-primary">#cfi-self-service-support</span>.</p>
+                    <a role="button" class="btn btn-outline-primary mt-2" href="#">Open Slack Channel</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock content %}

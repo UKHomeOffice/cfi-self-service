@@ -1,0 +1,63 @@
+{% extends "../layout.jinja2" %}
+{% block content %}
+<form method="post">
+    <div class="row">
+        <!-- Test -->
+        <div class="col-12 mb-4 col-md-4">
+            <div class="card shadow h-100">
+                <div class="card-body">
+                    <i class="bi bi-lock-fill menu-icon" style="font-size: 2.5em;"></i>
+                    <p class="mt-2 mb-1"><small>Environment</small></p>
+                    <h5 class="card-title fw-medium">Test</h5>
+                    <h6 class="card-subtitle mt-3">Please update the below text area to update the URL for the <strong>Test</strong> environment.</h6>
+                    <div class="input-group mt-4">
+                        <span class="input-group-text"><i class="bi bi-link"></i></span>
+                        <input class="form-control" name="deaTestEnvironmentURL" value="{{ dea_test_environment_url }}" />
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- Development -->
+        <div class="col-12 mb-4 col-md-4">
+            <div class="card shadow h-100">
+                <div class="card-body">
+                    <i class="bi bi-lock-fill menu-icon" style="font-size: 2.5em;"></i>
+                    <p class="mt-2 mb-1"><small>Environment</small></p>
+                    <h5 class="card-title fw-medium">Development</h5>
+                    <h6 class="card-subtitle mt-3">Please update the below text area to update the URL for the <strong>Development</strong> environment.</h6>
+                    <div class="input-group mt-4">
+                        <span class="input-group-text"><i class="bi bi-link"></i></span>
+                        <input class="form-control" name="deaDevEnvironmentURL" value="{{ dea_dev_environment_url }}" />
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- Production -->
+        <div class="col-12 mb-4 col-md-4">
+            <div class="card shadow h-100">
+                <div class="card-body">
+                    <i class="bi bi-lock-fill menu-icon" style="font-size: 2.5em;"></i>
+                    <p class="mt-2 mb-1"><small>Environment</small></p>
+                    <h5 class="card-title fw-medium">Production</h5>
+                    <h6 class="card-subtitle mt-3">Please update the below text area to update the URL for the <strong>Production</strong> environment.</h6>
+                    <div class="input-group mt-4">
+                        <span class="input-group-text"><i class="bi bi-link"></i></span>
+                        <input class="form-control" name="deaProdEnvironmentURL" value="{{ dea_prod_environment_url }}" />
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <p class="text-end">
+        <button type="submit" class="btn btn-success mt-3" value="Submit"><i class="bi bi-check"></i> Submit URL Changes</button>
+    </p>
+</form>
+<!-- Flash Messages -->
+{% if "Environment URLs Updated" in message %}
+    <div class="alert alert-success shadow flash-message" id="flashMessage" role="alert">
+        <p class="text-center"><i class="bi bi-check-circle-fill text-white" style="font-size: 2.5rem;"></i></p>
+        <h5 class="fw-normal text-white text-center mt-3">Update Successful</h5>
+        <p class="text-center text-white-50">The environment URLs have been updated successfully.</p>
+    </div>
+{% endif %}
+{% endblock content %}

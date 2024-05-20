@@ -1,0 +1,35 @@
+{% extends "../layout.jinja2" %}
+{% block content %}
+    <div class="row">
+        {% if approved_environments %}
+            {% for environment in approved_environments %}
+                <!-- Environment -->
+                <div class="col-12 mb-4 col-md-4">
+                    <div class="card shadow h-100">
+                        <div class="card-body">
+                            <i class="bi bi-lock-fill menu-icon" style="font-size: 2.5em;"></i>
+                            <p class="mt-2 mb-1"><small>Environment</small></p>
+                            <h5 class="card-title fw-medium">{{ environment.get('access-environment') }}</h5>
+                            <h6 class="card-subtitle mt-3">You have access to the <strong>{{ environment.get('access-environment') }}</strong> environment. Please see below for the ability to download the VPN profile and display the URL for this environment.</h6>
+                            <p class="mt-4">
+                                <!-- Download VPN Profile 
+                                <button id="downloadVPNProfile-{{ environment.get('access-environment') }}" class="btn btn-primary me-2"><i class="bi bi-download me-2"></i> Download VPN Profile</button>
+                                -->
+                                <!-- Display URL -->
+                                <button id="showEnvironmentURL-{{ environment.get('access-environment') }}" class="btn btn-primary"><i class="bi bi-link-45deg me-2"></i> Display URL</button>
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+        {% else %}
+            <div class="col-12">
+                <div class="card shadow mb-4">
+                    <div class="card-body">
+                        <p class="lead text-center mb-0 py-4">There are no environments to display.</p>
+                    </div>
+                </div>
+            </div>
+        {% endif %}
+    </div>
+{% endblock content %}
