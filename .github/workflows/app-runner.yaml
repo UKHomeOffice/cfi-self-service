@@ -51,4 +51,4 @@ jobs:
           region: ${{ secrets.AWS_REGION }}
           cpu : 1
           memory : 2
-          wait-for-service-stability-seconds: true
+          wait-for-service-stability: true
