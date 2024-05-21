@@ -1,4 +1,3 @@
-
 name: Deploy to App Runner - Source
 on:
   push:
@@ -44,11 +43,11 @@ jobs:
           source-connection-arn: ${{ secrets.AWS_CONNECTION_SOURCE_ARN }}
           repo: https://github.com/${{ github.repository }}
           branch: ${{ github.ref }}
-          runtime: PYTHON_3
-          build-command: cd scripts
-          start-command: bash pserve-prod.sh
-          port: 6543
           region: ${{ secrets.AWS_REGION }}
+          runtime: python311
+          build-command: cd scripts && bash setup.sh
+          start-command: cd scripts && bash pserve-app-runner.sh
+          port: 6543
           cpu : 1
           memory : 2
-          wait-for-service-stability: true
+          wait-for-service-stability-seconds: 1200
