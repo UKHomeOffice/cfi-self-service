@@ -6,3 +6,5 @@ plaster_pastedeploy==1.0.1
 pyramid==2.0
 pyramid_jinja2==2.10
 waitress==2.1.2
+boto3==1.33.13
+botocore==1.33.13

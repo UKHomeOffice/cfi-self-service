@@ -45,8 +45,8 @@ jobs:
           branch: ${{ github.ref }}
           region: ${{ secrets.AWS_REGION }}
           runtime: PYTHON_311
-          build-command: cd scripts && bash setup.sh
-          start-command: cd scripts && bash pserve-app-runner.sh
+          build-command: bash scripts/setup.sh
+          start-command: bash scripts/pserve-app-runner.sh
           port: 6543
           cpu : 1
           memory : 2
