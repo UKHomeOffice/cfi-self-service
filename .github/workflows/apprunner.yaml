@@ -44,7 +44,7 @@ jobs:
           repo: https://github.com/${{ github.repository }}
           branch: ${{ github.ref }}
           region: ${{ secrets.AWS_REGION }}
-          runtime: python311
+          runtime: PYTHON_311
           build-command: cd scripts && bash setup.sh
           start-command: cd scripts && bash pserve-app-runner.sh
           port: 6543
