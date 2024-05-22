@@ -1,7 +1,7 @@
 {% extends "../layout.jinja2" %}
 {% block content %}
 <!-- Request Breakdown -->
-<div class="row align-items-end mb-5">
+<div class="row mb-5">
     {% if not selected_status %}
         <!-- All Requests -->
         {% for status_type, color, icon, text in [
@@ -52,7 +52,7 @@
     {% endif %}
         <div class="card shadow request-filters">
             <div class="card-body">
-                <h6 class="text-white fw-medium d-flex align-items-center mb-4"><i class="bi bi-funnel-fill text-white me-3" style="font-size: 1.75em;"></i> Filters</h6>
+                <h6 class="text-white fw-medium d-flex align-items-center mb-3"><i class="bi bi-funnel-fill text-white me-3" style="font-size: 1.75em;"></i> Filters</h6>
                 <form id="filterForm" method="get">
                     <!-- Status Filter -->
                     <div>
@@ -75,9 +75,9 @@
                         </select>
                     </div>
                 </form>
-                <!--<form class="mt-4" method="post">
-                    <button type="submit" class="btn btn-light" name="exportData" id="exportData"><i class="bi bi-filetype-csv me-2"></i> Export to CSV</button>
-                </form>-->
+                <form class="mt-4" method="post">
+                    <button type="submit" class="btn btn-sm btn-light" name="exportData" id="exportData"><i class="bi bi-filetype-csv me-2"></i> Export to CSV</button>
+                </form>
             </div>
         </div>
     </div>

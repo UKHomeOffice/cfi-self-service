@@ -3,7 +3,7 @@ from pyramid.view import view_config
 from cfi_self_service.backend.security.authentication import authenticated_view
 
 @view_config(route_name='home', renderer='cfi_self_service:frontend/templates/dashboard/home.jinja2')
-#@authenticated_view
+@authenticated_view
 def home_view(request):
 
     """

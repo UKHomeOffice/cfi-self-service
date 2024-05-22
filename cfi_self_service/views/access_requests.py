@@ -12,7 +12,7 @@ from cfi_self_service.backend.security.authentication import authenticated_view
 from cfi_self_service.backend.utilities.access_requests import get_status_counts, csv_data_export
 
 @view_config(route_name='access-requests-dashboard', renderer='cfi_self_service:frontend/templates/access_requests/dashboard.jinja2')
-#@authenticated_view
+@authenticated_view
 def access_requests_dashboard_view(request):
 
     """
@@ -74,7 +74,7 @@ def access_requests_dashboard_view(request):
     }
 
 @view_config(route_name='access-requests-new', renderer='cfi_self_service:frontend/templates/access_requests/new.jinja2')
-#@authenticated_view
+@authenticated_view
 def access_requests_new_view(request):
 
     """
@@ -122,7 +122,7 @@ def access_requests_new_view(request):
     }
 
 @view_config(route_name='access-requests-existing', renderer='cfi_self_service:frontend/templates/access_requests/existing.jinja2')
-#@authenticated_view
+@authenticated_view
 def access_requests_existing_view(request):
 
     """
@@ -187,6 +187,10 @@ def access_requests_existing_view(request):
         }
         # Update the item in DynamoDB with the provided information:
         dynamodb_table.update_item(request_id, update_expression, expression_attribute_names, expression_attribute_values)
+        # Redirect user to the access requests dashboard:
+        request.session.flash('Record Updated')
+        redirect_url = request.route_url('access-requests-dashboard')
+        raise HTTPFound(redirect_url)
     # Return data for rendering the template:
     return {
         'subtitle': 'CFI Self Service Portal - Access Requests',
@@ -195,7 +199,7 @@ def access_requests_existing_view(request):
     }
 
 @view_config(route_name='access-requests-admin', renderer='cfi_self_service:frontend/templates/access_requests/admin.jinja2')
-#@authenticated_view
+@authenticated_view
 def access_requests_admin_view(request):
 
     """

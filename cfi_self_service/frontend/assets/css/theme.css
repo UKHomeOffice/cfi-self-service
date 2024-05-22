@@ -165,6 +165,10 @@ strong {
     }
 }
 
+.modal {
+    --bs-modal-width: 750px;
+}
+
 ::placeholder {
     color: var(--bs-gray-500) !important;
     opacity: 1

@@ -32,7 +32,6 @@ class DynamoDB:
 
         try:
             self.table.put_item(Item=item)
-            return "Item created successfully"
         except Exception as e:
             raise HTTPNotFound from e
 
@@ -52,8 +51,6 @@ class DynamoDB:
             response = self.table.query(KeyConditionExpression=Key('Request-ID').eq(key))
             if response:
                 return response
-            else:
-                raise HTTPNotFound from e
         except Exception as e:
             raise HTTPNotFound from e
 
@@ -76,7 +73,6 @@ class DynamoDB:
                 ExpressionAttributeNames=expression_attribute_names,
                 ExpressionAttributeValues=expression_attribute_values
             )
-            return "Item updated successfully"
         except Exception as e:
             raise HTTPNotFound from e
 
@@ -92,7 +88,6 @@ class DynamoDB:
 
         try:
             self.table.delete_item(Key={ 'Request-ID': key })
-            return "Item deleted successfully"
         except Exception as e:
             raise HTTPNotFound from e
 
