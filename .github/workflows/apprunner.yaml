@@ -38,7 +38,7 @@ jobs:
           DEA_PROD_ENVIRONMENT_URL_NAME: ${{ secrets.AWS_SECRET_DEA_PROD_ENVIRONMENT_URL_NAME }}
           DEA_PROD_ENVIRONMENT_URL_KEY: ${{ secrets.AWS_SECRET_DEA_PROD_ENVIRONMENT_URL_KEY }}
         with:
-          service: app-runner-git-deploy-service
+          service: cfi-self-service-user-portal
           source-connection-arn: ${{ secrets.AWS_CONNECTION_SOURCE_ARN }}
           repo: https://github.com/${{ github.repository }}
           branch: ${{ github.ref }}
