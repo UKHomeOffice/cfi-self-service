@@ -63,4 +63,4 @@ jobs:
           cpu : 1
           memory : 2
           instance-role-arn: ${{ secrets.AWS_INSTANCE_ROLE_ARN }}
-          wait-for-service-stability-seconds: 1200
+          wait-for-service-stability-seconds: 600
