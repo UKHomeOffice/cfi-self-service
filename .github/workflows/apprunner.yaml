@@ -1,50 +1,62 @@
 name: Deploy to App Runner - Source
 on:
   push:
-    # Trigger workflow on git push to main branch:
     branches: [ main ]
-  # Allow manual invocation of the workflow:
   workflow_dispatch:
-permissions:
-  # The id-token permission is required for requesting the JWT:
-  id-token: write
-  # The contents permission is required for actions/checkout:
-  contents: read
 jobs:
   deploy:
     runs-on: ubuntu-latest
+    permissions:
+      # The [id-token] permission is required for requesting the JWT
+      # and the [contents] permission is required for actions/checkout:
+      id-token: write
+      contents: read
     env:
       REGION_NAME: ${{ secrets.AWS_REGION }}
-      DYNAMO_DB_ACCESS_REQUESTS_TABLE_NAME: ${{ secrets.DYNAMODB_ACCESS_REQUESTS_TABLE_NAME }}
-      COGNITO_CLIENT_ID_NAME: ${{ secrets.AWS_SECRET_COGNITO_CLIENT_ID_NAME }}
-      COGNITO_CLIENT_ID_KEY: ${{ secrets.AWS_SECRET_COGNITO_CLIENT_ID_KEY }}
-      COGNITO_USER_POOL_ID_NAME: ${{ secrets.AWS_SECRET_COGNITO_USER_POOL_ID_NAME }}
-      COGNITO_USER_POOL_ID_KEY: ${{ secrets.AWS_SECRET_COGNITO_USER_POOL_ID_KEY }}
-      DEA_TEST_ENVIRONMENT_URL_NAME: ${{ secrets.AWS_SECRET_DEA_TEST_ENVIRONMENT_URL_NAME }}
-      DEA_TEST_ENVIRONMENT_URL_KEY: ${{ secrets.AWS_SECRET_DEA_TEST_ENVIRONMENT_URL_KEY }}
-      DEA_DEV_ENVIRONMENT_URL_NAME: ${{ secrets.AWS_SECRET_DEA_DEV_ENVIRONMENT_URL_NAME }}
-      DEA_DEV_ENVIRONMENT_URL_KEY: ${{ secrets.AWS_SECRET_DEA_DEV_ENVIRONMENT_URL_KEY }}
-      DEA_PROD_ENVIRONMENT_URL_NAME: ${{ secrets.AWS_SECRET_DEA_PROD_ENVIRONMENT_URL_NAME }}
-      DEA_PROD_ENVIRONMENT_URL_KEY: ${{ secrets.AWS_SECRET_DEA_PROD_ENVIRONMENT_URL_KEY }}
     steps:
       # 1. Configure AWS Credentials:
       - name: configure aws credentials
         uses: aws-actions/configure-aws-credentials@v4
         with:
-          aws-region: ${{ secrets.AWS_REGION }}
+          aws-region: ${{ env.REGION_NAME }}
           role-to-assume: ${{ secrets.AWS_ROLE_TO_ASSUME_DEV }}
           role-session-name: GITHUBACTIONSESSION
       # 2. Deploy application to App Runner:
       - name: Deploy to App Runner
         id: deploy-apprunner
         uses: awslabs/amazon-app-runner-deploy@main
+        env:
+          DYNAMO_DB_ACCESS_REQUESTS_TABLE_NAME: ${{ secrets.DYNAMODB_ACCESS_REQUESTS_TABLE_NAME }}
+          COGNITO_CLIENT_ID_NAME: ${{ secrets.AWS_SECRET_COGNITO_CLIENT_ID_NAME }}
+          COGNITO_CLIENT_ID_KEY: ${{ secrets.AWS_SECRET_COGNITO_CLIENT_ID_KEY }}
+          COGNITO_USER_POOL_ID_NAME: ${{ secrets.AWS_SECRET_COGNITO_USER_POOL_ID_NAME }}
+          COGNITO_USER_POOL_ID_KEY: ${{ secrets.AWS_SECRET_COGNITO_USER_POOL_ID_KEY }}
+          DEA_TEST_ENVIRONMENT_URL_NAME: ${{ secrets.AWS_SECRET_DEA_TEST_ENVIRONMENT_URL_NAME }}
+          DEA_TEST_ENVIRONMENT_URL_KEY: ${{ secrets.AWS_SECRET_DEA_TEST_ENVIRONMENT_URL_KEY }}
+          DEA_DEV_ENVIRONMENT_URL_NAME: ${{ secrets.AWS_SECRET_DEA_DEV_ENVIRONMENT_URL_NAME }}
+          DEA_DEV_ENVIRONMENT_URL_KEY: ${{ secrets.AWS_SECRET_DEA_DEV_ENVIRONMENT_URL_KEY }}
+          DEA_PROD_ENVIRONMENT_URL_NAME: ${{ secrets.AWS_SECRET_DEA_PROD_ENVIRONMENT_URL_NAME }}
+          DEA_PROD_ENVIRONMENT_URL_KEY: ${{ secrets.AWS_SECRET_DEA_PROD_ENVIRONMENT_URL_KEY }}
         with:
           service: app-runner-git-deploy-service
           source-connection-arn: ${{ secrets.AWS_CONNECTION_SOURCE_ARN }}
           repo: https://github.com/${{ github.repository }}
           branch: ${{ github.ref }}
-          region: ${{ secrets.AWS_REGION }}
+          region: ${{ env.REGION_NAME }}
           runtime: PYTHON_311
+          copy-secret-env-vars: |
+            REGION_NAME
+            DYNAMO_DB_ACCESS_REQUESTS_TABLE_NAME
+            COGNITO_CLIENT_ID_NAME
+            COGNITO_CLIENT_ID_KEY
+            COGNITO_USER_POOL_ID_NAME
+            COGNITO_USER_POOL_ID_KEY
+            DEA_TEST_ENVIRONMENT_URL_NAME
+            DEA_TEST_ENVIRONMENT_URL_KEY
+            DEA_DEV_ENVIRONMENT_URL_NAME
+            DEA_DEV_ENVIRONMENT_URL_KEY
+            DEA_PROD_ENVIRONMENT_URL_NAME
+            DEA_PROD_ENVIRONMENT_URL_KEY
           build-command: bash scripts/setup.sh
           start-command: bash scripts/pserve-app-runner.sh
           port: 6543
