@@ -1,7 +1,12 @@
 
+import logging
 import secrets
 from pyramid.config import Configurator
 from pyramid.session import SignedCookieSessionFactory
+
+# Create and configure a logger instance:
+logger = logging.getLogger(__name__)
+logging.basicConfig(level=logging.DEBUG, format="%(asctime)s %(levelname)s %(message)s", datefmt="%d/%m/%Y %H:%M:%S")
 
 def main(global_config, **settings):
 
@@ -22,6 +27,8 @@ def main(global_config, **settings):
         - The config.scan() method scans the project for additional configuration and views.
     """
 
+    # Log an info message stating that the app has started:
+    logger.info('Application has been started successfully.')
     # Generate a random secret key for session encryption:
     secret_key = secrets.token_hex(32)
     # Setup the session factory with the generated secret key:

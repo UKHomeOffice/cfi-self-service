@@ -1,5 +1,10 @@
 
+import logging
 from pyramid.view import notfound_view_config
+
+# Create and configure a logger instance:
+logger = logging.getLogger(__name__)
+logging.basicConfig(level=logging.DEBUG, format="%(asctime)s %(levelname)s %(message)s", datefmt="%d/%m/%Y %H:%M:%S")
 
 @notfound_view_config(renderer='cfi_self_service:frontend/templates/not_found.jinja2')
 def notfound_view(request):
@@ -23,6 +28,7 @@ def notfound_view(request):
 
     # Retrieve the original exception causing the not found error:
     original_exception = request.exception.__cause__
+    logger.error("An error has occured - %s", original_exception)
     # Set the response status to 404:
     request.response.status = 404
     # Return data for rendering the template:
