@@ -22,45 +22,45 @@ jobs:
           role-to-assume: ${{ secrets.AWS_ROLE_TO_ASSUME_DEV }}
           role-session-name: GITHUBACTIONSESSION
       # 2. Deploy application to App Runner:
-      - name: Deploy to App Runner
-        id: deploy-apprunner
-        uses: awslabs/amazon-app-runner-deploy@main
-        env:
-          DYNAMO_DB_ACCESS_REQUESTS_TABLE_NAME: ${{ secrets.DYNAMODB_ACCESS_REQUESTS_TABLE_NAME }}
-          COGNITO_CLIENT_ID_NAME: ${{ secrets.AWS_SECRET_COGNITO_CLIENT_ID_NAME }}
-          COGNITO_CLIENT_ID_KEY: ${{ secrets.AWS_SECRET_COGNITO_CLIENT_ID_KEY }}
-          COGNITO_USER_POOL_ID_NAME: ${{ secrets.AWS_SECRET_COGNITO_USER_POOL_ID_NAME }}
-          COGNITO_USER_POOL_ID_KEY: ${{ secrets.AWS_SECRET_COGNITO_USER_POOL_ID_KEY }}
-          DEA_TEST_ENVIRONMENT_URL_NAME: ${{ secrets.AWS_SECRET_DEA_TEST_ENVIRONMENT_URL_NAME }}
-          DEA_TEST_ENVIRONMENT_URL_KEY: ${{ secrets.AWS_SECRET_DEA_TEST_ENVIRONMENT_URL_KEY }}
-          DEA_DEV_ENVIRONMENT_URL_NAME: ${{ secrets.AWS_SECRET_DEA_DEV_ENVIRONMENT_URL_NAME }}
-          DEA_DEV_ENVIRONMENT_URL_KEY: ${{ secrets.AWS_SECRET_DEA_DEV_ENVIRONMENT_URL_KEY }}
-          DEA_PROD_ENVIRONMENT_URL_NAME: ${{ secrets.AWS_SECRET_DEA_PROD_ENVIRONMENT_URL_NAME }}
-          DEA_PROD_ENVIRONMENT_URL_KEY: ${{ secrets.AWS_SECRET_DEA_PROD_ENVIRONMENT_URL_KEY }}
-        with:
-          service: cfi-self-service-user-portal
-          source-connection-arn: ${{ secrets.AWS_CONNECTION_SOURCE_ARN }}
-          repo: https://github.com/${{ github.repository }}
-          branch: ${{ github.ref }}
-          region: ${{ env.REGION_NAME }}
-          runtime: PYTHON_311
-          copy-secret-env-vars: |
-            REGION_NAME
-            DYNAMO_DB_ACCESS_REQUESTS_TABLE_NAME
-            COGNITO_CLIENT_ID_NAME
-            COGNITO_CLIENT_ID_KEY
-            COGNITO_USER_POOL_ID_NAME
-            COGNITO_USER_POOL_ID_KEY
-            DEA_TEST_ENVIRONMENT_URL_NAME
-            DEA_TEST_ENVIRONMENT_URL_KEY
-            DEA_DEV_ENVIRONMENT_URL_NAME
-            DEA_DEV_ENVIRONMENT_URL_KEY
-            DEA_PROD_ENVIRONMENT_URL_NAME
-            DEA_PROD_ENVIRONMENT_URL_KEY
-          build-command: bash scripts/setup.sh
-          start-command: bash scripts/pserve-app-runner.sh
-          port: 6543
-          cpu : 1
-          memory : 2
-          instance-role-arn: ${{ secrets.AWS_INSTANCE_ROLE_ARN }}
-          wait-for-service-stability-seconds: 600
+      # - name: Deploy to App Runner
+        # id: deploy-apprunner
+        # uses: awslabs/amazon-app-runner-deploy@main
+        # env:
+        #   DYNAMO_DB_ACCESS_REQUESTS_TABLE_NAME: ${{ secrets.DYNAMODB_ACCESS_REQUESTS_TABLE_NAME }}
+        #   COGNITO_CLIENT_ID_NAME: ${{ secrets.AWS_SECRET_COGNITO_CLIENT_ID_NAME }}
+        #   COGNITO_CLIENT_ID_KEY: ${{ secrets.AWS_SECRET_COGNITO_CLIENT_ID_KEY }}
+        #   COGNITO_USER_POOL_ID_NAME: ${{ secrets.AWS_SECRET_COGNITO_USER_POOL_ID_NAME }}
+        #   COGNITO_USER_POOL_ID_KEY: ${{ secrets.AWS_SECRET_COGNITO_USER_POOL_ID_KEY }}
+        #   DEA_TEST_ENVIRONMENT_URL_NAME: ${{ secrets.AWS_SECRET_DEA_TEST_ENVIRONMENT_URL_NAME }}
+        #   DEA_TEST_ENVIRONMENT_URL_KEY: ${{ secrets.AWS_SECRET_DEA_TEST_ENVIRONMENT_URL_KEY }}
+        #   DEA_DEV_ENVIRONMENT_URL_NAME: ${{ secrets.AWS_SECRET_DEA_DEV_ENVIRONMENT_URL_NAME }}
+        #   DEA_DEV_ENVIRONMENT_URL_KEY: ${{ secrets.AWS_SECRET_DEA_DEV_ENVIRONMENT_URL_KEY }}
+        #   DEA_PROD_ENVIRONMENT_URL_NAME: ${{ secrets.AWS_SECRET_DEA_PROD_ENVIRONMENT_URL_NAME }}
+        #   DEA_PROD_ENVIRONMENT_URL_KEY: ${{ secrets.AWS_SECRET_DEA_PROD_ENVIRONMENT_URL_KEY }}
+        # with:
+        #   service: cfi-self-service-user-portal
+        #   source-connection-arn: ${{ secrets.AWS_CONNECTION_SOURCE_ARN }}
+        #   repo: https://github.com/${{ github.repository }}
+        #   branch: ${{ github.ref }}
+        #   region: ${{ env.REGION_NAME }}
+        #   runtime: PYTHON_311
+        #   copy-secret-env-vars: |
+        #     REGION_NAME
+        #     DYNAMO_DB_ACCESS_REQUESTS_TABLE_NAME
+        #     COGNITO_CLIENT_ID_NAME
+        #     COGNITO_CLIENT_ID_KEY
+        #     COGNITO_USER_POOL_ID_NAME
+        #     COGNITO_USER_POOL_ID_KEY
+        #     DEA_TEST_ENVIRONMENT_URL_NAME
+        #     DEA_TEST_ENVIRONMENT_URL_KEY
+        #     DEA_DEV_ENVIRONMENT_URL_NAME
+        #     DEA_DEV_ENVIRONMENT_URL_KEY
+        #     DEA_PROD_ENVIRONMENT_URL_NAME
+        #     DEA_PROD_ENVIRONMENT_URL_KEY
+        #   build-command: bash scripts/setup.sh
+        #   start-command: bash scripts/pserve-app-runner.sh
+        #   port: 6543
+        #   cpu : 1
+        #   memory : 2
+        #   instance-role-arn: ${{ secrets.AWS_INSTANCE_ROLE_ARN }}
+        #   wait-for-service-stability-seconds: 600
