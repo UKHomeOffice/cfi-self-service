@@ -47,6 +47,7 @@ def includeme(config):
     # Environment URL & VPN Profile Routes:
     config.add_route(name='environment-urls-vpn-generate', path='/environment-urls-vpn/')
     config.add_route(name='environment-urls-vpn-update', path='/environment-urls-vpn/update/')
+    config.add_route(name='environment-urls-vpn-notification', path='/environment-urls-vpn/notification/{id}')
 
     # Logout Route:
     config.add_route('logout', '/logout/')

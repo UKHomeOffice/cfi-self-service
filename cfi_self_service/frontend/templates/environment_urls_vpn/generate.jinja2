@@ -27,11 +27,35 @@
                                     <h5 class="modal-title fw-medium"><i class="bi bi-lock-fill me-2"></i> {{environment.get('access-environment')}} Environment URL</h5>
                                 </div>
                                 <div class="modal-body mb-2">
-                                    <h6 class="card-subtitle">You have access to the <strong>{{environment.get('access-environment')}}</strong> environment. Please see below for the ability to download the VPN profile and display the URL for this environment.</h6>
-                                    <div class="input-group mt-4">
+                                    <h6 class="card-subtitle">You have been granted access to the <strong>{{environment.get('access-environment')}}</strong> environment. Please see below for the ability to download the VPN profile and display the environment URL.</h6>
+                                    <!-- Environment URL -->
+                                    <div class="input-group mt-3">
                                         <span class="input-group-text"><i class="bi bi-link"></i></span>
-                                        <input class="form-control" name="environmentURL-{{environment.get('access-environment-url')}}" id="environmentURL-{{environment.get('access-environment-url')}}" value="{{environment.get('access-environment-url')}}" />
+                                        <input class="form-control" type="text" name="environmentURL-{{environment.get('access-environment')}}" id="environmentURL-{{environment.get('access-environment')}}" value="{{environment.get('access-environment-url')}}" readonly />
+                                        <button class="btn btn-outline-primary" type="button" onclick="copyEnvironmentURLtoClipboard()">
+                                            <i class="bi bi-copy me-2"></i> Copy URL
+                                        </button>
                                     </div>
+                                    <!-- Copy URL Function -->
+                                    <script>
+                                        function copyEnvironmentURLtoClipboard() {
+                                            var copyText = document.getElementById("environmentURL-{{environment.get('access-environment')}}");
+                                            // Check if the element exists and if navigator.clipboard is available (HTTPS only):                                            
+                                            if (copyText && navigator.clipboard) {
+                                                copyText.select();
+                                                copyText.setSelectionRange(0, 99999); // This is required for mobile devices
+                                                navigator.clipboard.writeText(copyText.value)
+                                                    .then(() => {
+                                                        console.log('Text copied to clipboard');
+                                                    })
+                                                    .catch((error) => {
+                                                        console.error('Failed to copy text to the clipboard: ', error);
+                                                    });
+                                            } else {
+                                                console.error('Failed to copy text to the clipboard: navigator.clipboard is not available or element not found.');
+                                            }
+                                        }
+                                    </script>
                                 </div>
                             </div>
                         </div>

@@ -49,12 +49,12 @@ strong {
 }
 
 .sub-nav-header {
-    background: #121B29
+    background: #121b29
 }
 
 .btn-primary-light {
     --bs-btn-bg: #6ea8fe;
-    --bs-btn-border-color: #6ea8fe;
+    --bs-btn-border-color: #6ea8fe
 }
 
 .request-filters {
@@ -76,7 +76,7 @@ strong {
 
 .menu-icon {
     color: #010715;
-    font-size: 3em;
+    font-size: 3em
 }
 
 .start-80 {
@@ -84,7 +84,7 @@ strong {
 }
 
 .dropdown-toggle::after {
-    margin-left: .5em !important
+    display: none
 }
 
 .notification-message {
@@ -133,8 +133,9 @@ strong {
     --bs-alert-bg: var(--bs-danger)
 }
 
-.col-form-label { font-weight: 600 }
-
+.col-form-label {
+    font-weight: 600
+}
 
 .flash-message-login {
     position: fixed;
@@ -166,7 +167,7 @@ strong {
 }
 
 .modal {
-    --bs-modal-width: 750px;
+    --bs-modal-width: 750px
 }
 
 ::placeholder {
@@ -176,4 +177,32 @@ strong {
 
 ::-ms-input-placeholder {
     color: var(--bs-gray-500) !important
+}
+
+.dropdown-item {
+    border-radius: .375em
+}
+
+.fw-small {
+    font-size: small
+}
+
+.icon-wrapper {
+    position: relative;
+    display: inline-block
+}
+
+.icon-wrapper .alert-circle {
+    position: absolute;
+    bottom: -2px;
+    right: -2px;
+    width: 10px;
+    height: 10px;
+    background-color: red;
+    border-radius: 50%
+}
+
+.notification-border {
+    border-radius: 0;
+    border-top: 1px solid rgba(0, 0, 0, .176)
 }

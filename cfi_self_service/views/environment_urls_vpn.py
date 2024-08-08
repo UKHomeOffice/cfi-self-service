@@ -20,8 +20,14 @@ def environment_urls_vpn_generate_view(request):
         dict: A dictionary containing the subtitle, title, and approved environments to be rendered in the template.
     """
 
-    # Initialise DynamoDB instance and retrieve access request details:
+    # Perform a query to see if there are any outstanding notifications for the user:
     dynamodb_table = DynamoDB(os.environ.get('REGION_NAME'), os.environ.get('DYNAMO_DB_ACCESS_REQUESTS_TABLE_NAME'))
+    request_notifications = dynamodb_table.scan_for_request_notifications(request.session["email_address"])
+    # Raise an alert on the navigation if notifications are unread:
+    request_notifications_alert = False
+    if request_notifications:
+        request_notifications_alert = True
+    # Initialise DynamoDB instance and retrieve access request details:
     response = dynamodb_table.scan_for_approved_environments('Approved', request.session["email_address"])
     order = { "Test": 0, "Development": 1, "Production": 2 }
     sorted_items = sorted(response, key=lambda x: order.get(x.get('access-environment'), float('inf')))
@@ -57,6 +63,9 @@ def environment_urls_vpn_generate_view(request):
     return {
         'subtitle': 'CFI Self Service Portal',
         'title': 'Environment URLs & VPN Profiles',
+        'admin_user': request.session["admin_user"],
+        'notifications_alert_show': request_notifications_alert,
+        'notifications': request_notifications,
         'approved_environments': sorted_items,
     }
 
@@ -78,6 +87,13 @@ def environment_urls_vpn_update_view(request):
 
     # Load any flash messages that are available to display to the user:
     messages = request.session.pop_flash()
+    # Perform a query to see if there are any outstanding notifications for the user:
+    dynamodb_table = DynamoDB(os.environ.get('REGION_NAME'), os.environ.get('DYNAMO_DB_ACCESS_REQUESTS_TABLE_NAME'))
+    request_notifications = dynamodb_table.scan_for_request_notifications(request.session["email_address"])
+    # Raise an alert on the navigation if notifications are unread:
+    request_notifications_alert = False
+    if request_notifications:
+        request_notifications_alert = True
     # Pull through the environment URLs from Secrets Manager:
     region_name = os.environ.get('REGION_NAME')
     secrets_instance = Secrets(region_name)
@@ -108,8 +124,45 @@ def environment_urls_vpn_update_view(request):
     return {
         'subtitle': 'CFI Self Service Portal',
         'title': 'Update Environment URLs',
+        'admin_user': request.session["admin_user"],
         'message': messages,
         'dea_test_environment_url': dea_test_environment_url,
         'dea_dev_environment_url': dea_dev_environment_url,
-        'dea_prod_environment_url': dea_prod_environment_url
+        'dea_prod_environment_url': dea_prod_environment_url,
+        'notifications_alert_show': request_notifications_alert,
+        'notifications': request_notifications
     }
+
+@view_config(route_name='environment-urls-vpn-notification', renderer='cfi_self_service:frontend/templates/environment_urls_vpn/generate.jinja2')
+@authenticated_view
+def environment_urls_vpn_notification_view(request):
+
+    """
+    Summary:
+        Handles the environment URLs VPN notification view.
+        This view retrieves the request ID from the route parameters, initializes a DynamoDB instance,
+        updates the notification alert status in the DynamoDB table, and redirects the user to the
+        access requests dashboard.
+    Args:
+        request: The Pyramid request object containing the request data and environment context.
+    Raises:
+        HTTPFound: Redirects the user to the 'environment-urls-vpn-generate' route.
+    """
+
+    # Retrieve request ID from route parameters:
+    request_id = request.matchdict['id']
+    # Initialise DynamoDB instance and update the notification alert:
+    dynamodb_table = DynamoDB(os.environ.get('REGION_NAME'), os.environ.get('DYNAMO_DB_ACCESS_REQUESTS_TABLE_NAME'))
+    # Define update expression and attribute values for updating the item in DynamoDB:
+    update_expression = "SET #notification_alert = :notification_alert"
+    expression_attribute_names = {
+        '#notification_alert': 'notification-alert'
+    }
+    expression_attribute_values = {
+        ':notification_alert': 'false',
+    }
+    # Update the item in DynamoDB with the provided information:
+    dynamodb_table.update_item(request_id, update_expression, expression_attribute_names, expression_attribute_values)
+    # Redirect user to the access requests dashboard:
+    redirect_url = request.route_url('environment-urls-vpn-generate')
+    raise HTTPFound(redirect_url)

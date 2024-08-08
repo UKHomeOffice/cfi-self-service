@@ -118,7 +118,7 @@
             </div>
         {% endif %}
         <!-- Pending Actions -->
-        {% if access_request.status == "Pending" and request.has_permission('admin') %}
+        {% if access_request.status == "Pending" and admin_user == true %}
             <p class="mt-4 text-end">
                 <button type="button" class="btn btn-success me-2" data-bs-toggle="modal" data-bs-target="#approveModal"><i class="bi bi-check"></i> Approve</button>
                 <button type="button" class="btn btn-danger"  data-bs-toggle="modal" data-bs-target="#denyModal"><i class="bi bi-x"></i> Deny</button>
@@ -169,14 +169,4 @@
     </div>
   </div>
 </div>
-
-<!-- Flash Message
-{% if message != [] %}
-    <div class="alert alert-info shadow flash-message" id="flashMessage" role="alert">
-        <p class="text-center"><i class="bi bi-check-circle-fill text-white" style="font-size: 2.5rem;"></i></p>
-        <h5 class="fw-normal text-white text-center mt-3">Thanks for actioning this request!</h5>
-        <p class="text-center text-white-50">The requester will be informed of this update via portal notification.</p>
-    </div>
-{% endif %} -->
-
 {% endblock content %}

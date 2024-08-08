@@ -1,5 +1,6 @@
 
 import boto3
+import os
 import qrcode
 import uuid
 from pyramid.httpexceptions import HTTPFound, HTTPNotFound
@@ -53,6 +54,51 @@ class Cognito:
         except Exception:
             # If an exception occurs (e.g., access token is invalid), the user is not authenticated:
             return False
+
+    ##############################################################################################################
+    ##############################################################################################################
+    ##############################################################################################################
+
+    def list_users_in_group(self, group_name):
+
+        """
+        Summary:
+            Lists users in a specified group within an AWS Cognito User Pool.
+            This method uses the AWS Cognito `list_users_in_group` API to retrieve a list
+            of users that are members of the specified group within the associated User Pool.
+        """
+
+        try:
+            response = self.cognito_client.list_users_in_group(
+                UserPoolId=self.user_pool_id,
+                GroupName=group_name,
+                Limit=10
+            )
+            return response
+        except Exception as e:
+            # Handle general exceptions gracefully:
+            print("list_users_in_group - an error occurred - ", e)
+            raise HTTPNotFound from e
+
+    def check_user_is_admin(self, admin_group, username):
+
+        """
+        Summary:
+            Checks if a user is an admin by verifying their membership in the admin group.
+            This method iterates through the users in the provided admin group and checks
+            if the specified username (email) matches any of the users' email attributes.
+            If a match is found, the user is considered an admin.        
+        """
+
+        for user in admin_group.get('Users', []):
+            for attribute in user.get('Attributes', []):
+                if attribute.get('Name') == 'email' and attribute.get('Value') == username:
+                    return True
+        return False
+
+    ##############################################################################################################
+    ##############################################################################################################
+    ##############################################################################################################
 
     def authenticate_user(self, username, password):
 
@@ -169,14 +215,36 @@ class Cognito:
             raise HTTPNotFound from e
 
     def handle_verify_successful_auth(self, request, response):
+
+        """
+        Summary:
+            Handle successful authentication verification. This method processes the response from an 
+            authentication challenge. If the challenge is successfully completed, it stores the access
+            token in the session, checks if the user is an admin, sets the admin status in the 
+            session, and redirects the user to the home page with the appropriate headers. If the 
+            challenge is not completed, it redirects the user to the login page.
+        Args:
+            request: The current request object containing session and routing information.
+            response: The response object from the authentication challenge containing the 
+                    challenge parameters and authentication result.
+        Raises:
+            HTTPFound: A Pyramid HTTP exception for redirection.
+        """
+
         # Check if the authentication challenge has been successfully completed:
         if response["ChallengeParameters"] == {}:
-            # If challenge completed, create headers for authentication and redirect the user to the home page:
+            # Store the access token in the session:
             request.session["access_token"] = response["AuthenticationResult"]["AccessToken"]
+            # Retrieve the admin group and check if the user is an admin:
+            admin_group = Cognito.list_users_in_group(self, os.environ.get("COGNITO_USER_POOL_ADMIN_GROUP_NAME"))
+            is_user_admin = Cognito.check_user_is_admin(self, admin_group, request.session["email_address"])
+            request.session["admin_user"] = is_user_admin
+            # If challenge completed, create headers for authentication and redirect the user to the home page:
             headers = remember(request, response["AuthenticationResult"]["AccessToken"])
             redirect_url = request.route_url('home')
             raise HTTPFound(location=redirect_url, headers=headers)
         else:
+            # If the challenge is not completed, redirect the user back to the login page:
             redirect_url = request.route_url('login')
             raise HTTPFound(location=redirect_url)
 

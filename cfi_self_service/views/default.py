@@ -1,6 +1,8 @@
 
+import os
 from pyramid.view import view_config
 from cfi_self_service.backend.security.authentication import authenticated_view
+from cfi_self_service.backend.aws.dynamodb import DynamoDB
 
 @view_config(route_name='home', renderer='cfi_self_service:frontend/templates/dashboard/home.jinja2')
 @authenticated_view
@@ -18,8 +20,17 @@ def home_view(request):
             It includes information such as subtitle and title for the home page.
     """
 
+    # Perform a query to see if there are any outstanding notifications for the user:
+    dynamodb_table = DynamoDB(os.environ.get('REGION_NAME'), os.environ.get('DYNAMO_DB_ACCESS_REQUESTS_TABLE_NAME'))
+    request_notifications = dynamodb_table.scan_for_request_notifications(request.session["email_address"])
+    # Raise an alert on the navigation if notifications are unread:
+    request_notifications_alert = False
+    if request_notifications:
+        request_notifications_alert = True
     # Return data for rendering the template:
     return {
         'subtitle': 'CFI Self Service Portal',
-        'title': 'Home'
+        'title': 'Home',
+        'notifications_alert_show': request_notifications_alert,
+        'notifications': request_notifications
     }

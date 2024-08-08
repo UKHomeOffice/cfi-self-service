@@ -11,7 +11,7 @@
   <title>{{title}} - CFI Self Service User Portal</title>
   <!-- Bootstrap Core CSS & Custom Stylesheets -->
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous" />
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.2/font/bootstrap-icons.min.css" />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" />
   <link href="{{request.static_url('cfi_self_service:frontend/assets/css/theme.min.css')}}" rel="stylesheet" />
 </head>
 <body>
@@ -25,26 +25,67 @@
               <span class="navbar-toggler-icon"></span>
             </button>
             <div class="collapse navbar-collapse" id="navbarText">
+              <!-- Navigation Menu -->
               <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-                <!-- Navigation Menu -->
                 {% if title in ["Page Not Found"] %}
                   <li class="nav-item"><span class="nav-link ps-0 text-white">Page Not Found</span></li>
                 {% elif title == "Multi-Factor Authentication Request" or "Login" in title %}
                   <li class="nav-item"><a class="nav-link ps-0 text-white" href="/">Welcome</a></li>
                 {% else %}
-                  <!-- User Menu -->
-                  <li class="nav-item"><a class="nav-link underline ps-0 text-white" href="/home/">Home</a></li>
-                  <li class="nav-item"><a class="nav-link underline text-white" href="/access-requests/">Access Requests</a></li>
-                  <li class="nav-item"><a class="nav-link underline text-white" href="/environment-urls-vpn/">Environment URLs & VPN Profiles</a></li>
+                <li class="nav-item dropdown ms-auto">
+                  <a class="nav-link dropdown-toggle text-white ps-0 pe-3" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                    <div class="icon-wrapper">
+                      {% if notifications_alert_show == True %}
+                        <i class="bi bi-bell-fill"></i>
+                        <div class="alert-circle"></div>
+                      {% else %}
+                        <i class="bi bi-bell"></i>
+                      {% endif %}
+                    </div>
+                  </a>
+                  <ul class="dropdown-menu shadow py-0">
+                    <!-- Notification Alerts -->
+                    <li class="dropdown-item my-2 fw-bold">Notifications</li>
+                    {% if notifications %}
+                      {% for item in notifications %}
+                      <li>
+                        <a class="dropdown-item d-flex align-items-start notification-border py-3 me-2" href="/environment-urls-vpn/notification/{{item.get('Request-ID')}}">
+                          {% if item.get('access-status') == "Approved" %}
+                            <i class="bi bi-bell-fill text-success me-3"></i>
+                          {% endif %}
+                          {% if item.get('access-status') == "Denied" %}
+                            <i class="bi bi-bell-fill text-danger me-3"></i>
+                          {% endif %}
+                          <div>
+                            <div class="fw-normal">Access Request - {{item.get('access-environment')}}</div>
+                            <div class="fw-bold">{{item.get('access-status')}}</div>
+                            <small class="fw-light fw-small">on {{item.get('admin-response-date')}}</small>
+                          </div>
+                        </a>
+                      </li>
+                      {% endfor %}
+                    {% else %}
+                      <li class="dropdown-item d-flex align-items-start pt-2 pb-3">You have no new notifications to display.</li>
+                    {% endif %}
+                    <!-- Logout -->
+                    <li><hr class="dropdown-divider m-0"></li>
+                    <li><a class="dropdown-item py-2" href="/logout/"><i class="bi bi-box-arrow-left me-2"></i> <strong>Logout</strong></a></li>
+                  </ul>
+                </li>
+                <!-- User Menu -->
+                <li class="nav-item"><a class="nav-link underline text-white" href="/home/">Home</a></li>
+                <li class="nav-item"><a class="nav-link underline text-white" href="/access-requests/">Access Requests</a></li>
+                <li class="nav-item"><a class="nav-link underline text-white" href="/environment-urls-vpn/">Environment URLs & VPN Profiles</a></li>
                 {% endif %}
               </ul>
+              <!-- CTA Buttons -->
               <span class="navbar-text">
                 <!-- New Access Request -->
                 {% if ("Access Requests" in subtitle) or ("Access Requests" in title) %}
                   <a role="button" href="/access-requests/new/" class="btn btn-sm btn-light me-2"><i class="bi bi-plus-circle me-2"></i> New Request</a>
                 {% endif %}
                 <!-- Update Environment URL's -->
-                {% if "Environment URL" in title %}
+                {% if "Environment URL" in title and admin_user == true %}
                   <a role="button" href="/environment-urls-vpn/update/" class="btn btn-sm btn-light me-2"><i class="bi bi-link-45deg me-2"></i> Update URL's</a>
                 {% endif %}
               </span>

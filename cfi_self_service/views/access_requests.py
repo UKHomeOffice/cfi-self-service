@@ -1,4 +1,3 @@
-
 from datetime import datetime
 import uuid
 import math
@@ -29,8 +28,15 @@ def access_requests_dashboard_view(request):
             status counts, page number, and total number of pages.
     """
 
-    # Load any flash messages that are available to display to the user:_
+    # Load any flash messages that are available to display to the user:
     messages = request.session.pop_flash()
+    # Perform a query to see if there are any outstanding notifications for the user:
+    dynamodb_table = DynamoDB(os.environ.get('REGION_NAME'), os.environ.get('DYNAMO_DB_ACCESS_REQUESTS_TABLE_NAME'))
+    request_notifications = dynamodb_table.scan_for_request_notifications(request.session["email_address"])
+    # Raise an alert on the navigation if notifications are unread:
+    request_notifications_alert = False
+    if request_notifications:
+        request_notifications_alert = True
     # Obtain form data values:
     form_data = request.params
     selected_status = form_data.get('status')
@@ -38,7 +44,7 @@ def access_requests_dashboard_view(request):
     # Perform DynamoDB table query to return list of records:
     dynamodb_table = DynamoDB(os.environ.get('REGION_NAME'), os.environ.get('DYNAMO_DB_ACCESS_REQUESTS_TABLE_NAME'))
     response = dynamodb_table.scan_access_requests_table(selected_status, selected_environment)
-    sorted_items = sorted(response, key=lambda x: (x.get('access-status', ''), datetime.strptime(x.get('access-request-date'), '%d/%m/%Y %H:%M')), reverse=True)
+    sorted_items = sorted(response, key=lambda x: ( x.get('access-status', ''), datetime.strptime(x.get('access-request-date'), '%d/%m/%Y %H:%M') ), reverse=True)
     # Get status counts based on returned results:
     status_counts = get_status_counts(sorted_items)
     # Setup pagination on the final set of results:
@@ -64,6 +70,9 @@ def access_requests_dashboard_view(request):
     return {
         'subtitle': 'CFI Self Service Portal',
         'title': 'Access Requests',
+        'admin_user': request.session["admin_user"],
+        'notifications_alert_show': request_notifications_alert,
+        'notifications': request_notifications,
         'message': messages,
         'result': paginated_items,
         'selected_status': selected_status,
@@ -93,6 +102,14 @@ def access_requests_new_view(request):
         - The 'access-status' field is set to 'Pending' by default for a new request.
     """
 
+    # Perform a query to see if there are any outstanding notifications for the user:
+    dynamodb_table = DynamoDB(os.environ.get('REGION_NAME'), os.environ.get('DYNAMO_DB_ACCESS_REQUESTS_TABLE_NAME'))
+    request_notifications = dynamodb_table.scan_for_request_notifications(request.session["email_address"])
+    # Raise an alert on the navigation if notifications are unread:
+    request_notifications_alert = False
+    if request_notifications:
+        request_notifications_alert = True
+
     if request.method == "POST":
         # Extract form data from the request:
         form_data = request.params
@@ -118,7 +135,9 @@ def access_requests_new_view(request):
     # Return data for rendering the template:
     return {
         'subtitle': 'CFI Self Service Portal - Access Requests',
-        'title': 'New Request'
+        'title': 'New Request',
+        'notifications_alert_show': request_notifications_alert,
+        'notifications': request_notifications,
     }
 
 @view_config(route_name='access-requests-existing', renderer='cfi_self_service:frontend/templates/access_requests/existing.jinja2')
@@ -143,6 +162,13 @@ def access_requests_existing_view(request):
         - Admin users can update the access request status and provide comments via a form submission.
     """
 
+    # Perform a query to see if there are any outstanding notifications for the user:
+    dynamodb_table = DynamoDB(os.environ.get('REGION_NAME'), os.environ.get('DYNAMO_DB_ACCESS_REQUESTS_TABLE_NAME'))
+    request_notifications = dynamodb_table.scan_for_request_notifications(request.session["email_address"])
+    # Raise an alert on the navigation if notifications are unread:
+    request_notifications_alert = False
+    if request_notifications:
+        request_notifications_alert = True
     # Retrieve request ID from route parameters:
     request_id = request.matchdict['id']
     # Initialize DynamoDB instance and retrieve access request details:
@@ -183,7 +209,7 @@ def access_requests_existing_view(request):
             ':admin_form_comments': form_data.get('adminComments'),
             ':admin_form_full_name': 'Ryan Jackson',  # Assuming admin's full name is hardcoded
             ':admin_form_response_date': datetime.now().strftime("%d/%m/%Y %H:%M"),
-            ':notification_alert': 'false',
+            ':notification_alert': 'true',
         }
         # Update the item in DynamoDB with the provided information:
         dynamodb_table.update_item(request_id, update_expression, expression_attribute_names, expression_attribute_values)
@@ -195,7 +221,10 @@ def access_requests_existing_view(request):
     return {
         'subtitle': 'CFI Self Service Portal - Access Requests',
         'title': access_request_values.first_name + ' ' + access_request_values.last_name,
-        'access_request': access_request_values
+        'admin_user': request.session["admin_user"],
+        'access_request': access_request_values,
+        'notifications_alert_show': request_notifications_alert,
+        'notifications': request_notifications
     }
 
 @view_config(route_name='access-requests-admin', renderer='cfi_self_service:frontend/templates/access_requests/admin.jinja2')
@@ -219,71 +248,85 @@ def access_requests_admin_view(request):
         - Admin controls such as update and delete actions are handled based on form submission.
     """
 
-    # Retrieve request ID from route parameters:
-    request_id = request.matchdict['id']
-    # Initialize DynamoDB instance and retrieve access request details:
-    dynamodb_table = DynamoDB(os.environ.get('REGION_NAME'), os.environ.get('DYNAMO_DB_ACCESS_REQUESTS_TABLE_NAME'))
-    response = dynamodb_table.get_item(request_id)
-    # Initialize Access_Request object to hold access request details:
-    access_request_values = None
-    # Extract and populate Access_Request object with retrieved data:
-    for item in response['Items']:
-        access_request_values = Access_Request(
-            item.get('access-first-name'),
-            item.get('access-last-name'),
-            item.get('access-email-address'),
-            item.get('access-team'),
-            item.get('access-environment'),
-            item.get('access-status'),
-            item.get('access-comments'),
-            item.get('access-request-date'),
-            item.get('admin-full-name'),
-            item.get('admin-response-date'),
-            item.get('admin-comments')
-        )
-    # Handle POST request for administrative actions:
-    if request.method == "POST":
-        form_data = request.params
-        # Handle update action:
-        if form_data.get('AdminControlPanel') == "Update":
-            update_expression = "SET #access_email_address = :access_email_address, #access_environment = :access_environment, #access_first_name = :access_first_name, #access_last_name = :access_last_name, #access_request_date = :access_request_date, #access_status = :access_status, #access_team = :access_team, #admin_full_name = :admin_full_name, #admin_comments = :admin_comments, #admin_response_date = :admin_response_date, #notification_alert = :notification_alert"
-            expression_attribute_names = {
-                '#access_email_address': 'access-email-address',
-                '#access_environment': 'access-environment',
-                '#access_first_name': 'access-first-name',
-                '#access_last_name': 'access-last-name',
-                '#access_request_date': 'access-request-date',
-                '#access_status': 'access-status',
-                '#access_team': 'access-team',
-                '#admin_full_name': 'admin-full-name',
-                '#admin_comments': 'admin-comments',
-                '#admin_response_date': 'admin-response-date',
-                '#notification_alert': 'notification-alert',
-            }
-            expression_attribute_values = {
-                ':access_email_address': form_data.get('emailAddress'),
-                ':access_environment': form_data.get('environmentRequired'),
-                ':access_first_name': form_data.get('firstName'),
-                ':access_last_name': form_data.get('lastName'),
-                ':access_request_date': form_data.get('requestDate'),
-                ':access_status': form_data.get('requestStatus'),
-                ':access_team': form_data.get('teamName'),
-                ':admin_full_name': 'Ryan Jackson',  # Assuming admin's full name is hardcoded
-                ':admin_comments': form_data.get('adminComments'),
-                ':admin_response_date': datetime.now().strftime("%d/%m/%Y %H:%M"),
-                ':notification_alert': 'false',
-            }
-            dynamodb_table.update_item(request_id, update_expression, expression_attribute_names, expression_attribute_values)    
-            request.session.flash('Record Updated')
-        # Handle delete action:
-        if form_data.get('AdminControlPanel') == "Delete":
-            dynamodb_table.delete_item(request_id)
-            request.session.flash('Record Deleted')
-        raise HTTPFound(request.route_url('access-requests-dashboard'))  # Redirect to environment dashboard after deletion
-    # Return data for rendering the template:
-    return {
-        'subtitle': 'CFI Self Service Portal - Access Requests - Admin Control Panel',
-        'title': access_request_values.first_name + ' ' + access_request_values.last_name,
-        'access_request': access_request_values,
-        'current_date_time': datetime.now().strftime("%d/%m/%Y %H:%M")
-    }
+    if (request.session["admin_user"] is True):
+        # Perform a query to see if there are any outstanding notifications for the user:
+        dynamodb_table = DynamoDB(os.environ.get('REGION_NAME'), os.environ.get('DYNAMO_DB_ACCESS_REQUESTS_TABLE_NAME'))
+        request_notifications = dynamodb_table.scan_for_request_notifications(request.session["email_address"])
+        # Raise an alert on the navigation if notifications are unread:
+        request_notifications_alert = False
+        if request_notifications:
+            request_notifications_alert = True
+        # Retrieve request ID from route parameters:
+        request_id = request.matchdict['id']
+        # Initialize DynamoDB instance and retrieve access request details:
+        dynamodb_table = DynamoDB(os.environ.get('REGION_NAME'), os.environ.get('DYNAMO_DB_ACCESS_REQUESTS_TABLE_NAME'))
+        response = dynamodb_table.get_item(request_id)
+        # Initialize Access_Request object to hold access request details:
+        access_request_values = None
+        # Extract and populate Access_Request object with retrieved data:
+        for item in response['Items']:
+            access_request_values = Access_Request(
+                item.get('access-first-name'),
+                item.get('access-last-name'),
+                item.get('access-email-address'),
+                item.get('access-team'),
+                item.get('access-environment'),
+                item.get('access-status'),
+                item.get('access-comments'),
+                item.get('access-request-date'),
+                item.get('admin-full-name'),
+                item.get('admin-response-date'),
+                item.get('admin-comments')
+            )
+        # Handle POST request for administrative actions:
+        if request.method == "POST":
+            form_data = request.params
+            # Handle update action:
+            if form_data.get('AdminControlPanel') == "Update":
+                update_expression = "SET #access_email_address = :access_email_address, #access_environment = :access_environment, #access_first_name = :access_first_name, #access_last_name = :access_last_name, #access_request_date = :access_request_date, #access_status = :access_status, #access_team = :access_team, #admin_full_name = :admin_full_name, #admin_comments = :admin_comments, #admin_response_date = :admin_response_date, #notification_alert = :notification_alert"
+                expression_attribute_names = {
+                    '#access_email_address': 'access-email-address',
+                    '#access_environment': 'access-environment',
+                    '#access_first_name': 'access-first-name',
+                    '#access_last_name': 'access-last-name',
+                    '#access_request_date': 'access-request-date',
+                    '#access_status': 'access-status',
+                    '#access_team': 'access-team',
+                    '#admin_full_name': 'admin-full-name',
+                    '#admin_comments': 'admin-comments',
+                    '#admin_response_date': 'admin-response-date',
+                    '#notification_alert': 'notification-alert',
+                }
+                expression_attribute_values = {
+                    ':access_email_address': form_data.get('emailAddress'),
+                    ':access_environment': form_data.get('environmentRequired'),
+                    ':access_first_name': form_data.get('firstName'),
+                    ':access_last_name': form_data.get('lastName'),
+                    ':access_request_date': form_data.get('requestDate'),
+                    ':access_status': form_data.get('requestStatus'),
+                    ':access_team': form_data.get('teamName'),
+                    ':admin_full_name': 'Ryan Jackson',  # Assuming admin's full name is hardcoded
+                    ':admin_comments': form_data.get('adminComments'),
+                    ':admin_response_date': datetime.now().strftime("%d/%m/%Y %H:%M"),
+                    ':notification_alert': 'false',
+                }
+                dynamodb_table.update_item(request_id, update_expression, expression_attribute_names, expression_attribute_values)    
+                request.session.flash('Record Updated')
+            # Handle delete action:
+            if form_data.get('AdminControlPanel') == "Delete":
+                dynamodb_table.delete_item(request_id)
+                request.session.flash('Record Deleted')
+            raise HTTPFound(request.route_url('access-requests-dashboard'))  # Redirect to environment dashboard after deletion
+        # Return data for rendering the template:
+        return {
+            'subtitle': 'CFI Self Service Portal - Access Requests - Admin Control Panel',
+            'title': access_request_values.first_name + ' ' + access_request_values.last_name,
+            'notifications_alert_show': request_notifications_alert,
+            'notifications': request_notifications,
+            'access_request': access_request_values,
+            'current_date_time': datetime.now().strftime("%d/%m/%Y %H:%M")
+        }
+    else:
+        # Redirect user to the access requests dashboard:
+        redirect_url = request.route_url('access-requests-dashboard')
+        raise HTTPFound(redirect_url)

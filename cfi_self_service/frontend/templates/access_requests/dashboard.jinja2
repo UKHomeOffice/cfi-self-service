@@ -96,7 +96,9 @@
                             <th scope="col">Environment</th>
                             <th scope="col">Request Date</th>
                             <th scope="col">Status</th>
-                            <th scope="col"></th>
+                            {% if admin_user == true %}
+                                <th scope="col"></th>
+                            {% endif %}
                         </tr>
                     </thead>
                     <tbody>
@@ -133,7 +135,7 @@
                                         </span>
                                     </td>
                                 {% endif %}
-                                {% if request.has_permission('admin') %}
+                                {% if admin_user == true %}
                                     <td><a href="/access-requests/admin/{{ item.get('Request-ID')}}"><i class="bi bi-gear"></i></a></td>
                                 {% endif %}
                             </tr>
@@ -142,7 +144,7 @@
                 </table>
             </div>
         {% else %}
-            <p class="lead text-center mb-0 py-4">There are no records to display.</p>
+            <p class="lead text-center mb-0 py-4">There are no requests to display.</p>
         {% endif %}
     </div>
 </div>

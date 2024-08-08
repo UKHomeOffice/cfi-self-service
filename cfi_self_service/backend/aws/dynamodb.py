@@ -166,3 +166,28 @@ class DynamoDB:
             return response.get('Items', [])
         except Exception as e:
             raise HTTPNotFound from e
+
+    def scan_for_request_notifications(self, user=None):
+
+        """
+        Summary:
+            Scans the DynamoDB table to retrieve request notifications for a specific user.
+            This method performs a scan operation on the DynamoDB table to retrieve items that match
+            the whether the notification alert field is true and user email address.
+        Args:
+            status (str, optional): The status of the access request. Defaults to None.
+            user (str, optional): The email address of the user for whom approved environments are scanned. Defaults to None.
+        Returns:
+            list: A list containing items representing approved environments for the specified user.
+        Note:
+            - The method expects the 'status' and 'user' parameters to be provided to filter the results.
+            - The method returns a list of items representing approved environments for the specified user.
+        """
+
+        try:
+            # Perform the scan operation with filtering by access status and user email address:
+            response = self.table.scan(FilterExpression=Attr('notification-alert').eq("true") & Key('access-email-address').eq(user))
+            # Extract items from the response:
+            return response.get('Items', [])
+        except Exception as e:
+            raise HTTPNotFound from e
